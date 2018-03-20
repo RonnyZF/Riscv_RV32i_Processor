@@ -36,7 +36,10 @@ module DECO(
     output [2:0] CRT_MEM_OUT,
     output [2:0] CRT_EXE_OUT,
     output [6:0] FUNCT7_OUT,
-    output [2:0] FUNCT3_OUT
+    output [2:0] FUNCT3_OUT,
+    output reg [31:0] reg0, reg1, reg2, reg3, reg4, reg5, reg6, reg7, reg8, reg9, reg10,
+                    reg11, reg12, reg13, reg14, reg15, reg16, reg17, reg18, reg19, reg20,
+                    reg21, reg22, reg23, reg24, reg25, reg26, reg27, reg28, reg29, reg30, reg31
     //output [31:0] rr
     );
     reg [6:0] OPCODE;
@@ -91,7 +94,7 @@ module DECO(
             endcase
        end
 
-    // Instanciación
+    // InstanciaciÃ³n
     CONTROL_UNIT CTRL_UNIT(
         .Opcode_in(OPCODE),
         .RegWrite_out(CRT_WB[0]),
@@ -101,9 +104,12 @@ module DECO(
         .AluSrc_out(CRT_EXE[0]) 
         );
     //wire [31:0] r
-    banco_reg REG_BANK (.RegWrite(CRT_WB_IN), .ReadRegister1(READ1),.ReadRegister2(READ2),
+    Banco_registros Banco_registros (.RegWrite(CRT_WB_IN), .ReadRegister1(READ1),.ReadRegister2(READ2),
                            .WriteRegister(INST),.rst(rst), .clk(clk), .WriteData(WRITE_DATA),
-                           .ReadData1(DATA_A), .ReadData2(DATA_B));
+                           .ReadData1(DATA_A), .ReadData2(DATA_B),
+                           .reg0(reg0), .reg1(reg1), .reg2(reg2), .reg3(reg3), .reg4(reg4), .reg5(reg5), .reg6(reg6), .reg7(reg7), .reg8(reg8), .reg9(reg9), .reg10(reg10),
+                           .reg11(reg11), .reg12(reg12), .reg13(reg13), .reg14(reg14), .reg15(reg15), .reg16(reg16), .reg17(reg17), .reg18(reg18), .reg19(reg19), .reg20(reg20),
+                           .reg21(reg21), .reg22(reg22), .reg23(reg23), .reg24(reg24), .reg25(reg25), .reg26(reg26), .reg27(reg27), .reg28(reg28), .reg29(reg29), .reg30(reg30), .reg31(reg31));
    // assign rr=r;                      
     Ext_Signo SIGN_EXT ( .IN_16(DATA_SE), .OUT_32(DATA_SE_EX));
     
