@@ -23,10 +23,15 @@
 
 module RISC_V(
     input clk,
-    input rst
+    input rst,
+    input tick_r,tick_l,
+    output [6:0] out_disp,
+    output reg an0, an1, an2, an3,an4, an5, an6, an7,
+    output reg [4:0] leds 
+    
     );
     
-//Declaraci�n de variables
+//Declaración de variables
 
     //FETCH STAGE OUTPUTS (_FO)
     reg [31:0] PC_FO, DATA_FO;
@@ -91,6 +96,43 @@ module RISC_V(
     //WRITEBACK STAGE OUTPUTS (_WO)
     reg [31:0] DATA_WO;
     
+    //Lógica display
+    reg [4:0] register;
+    assign register = 5'b0;
+    reg [31:0] reg0;
+    reg [31:0] reg1;   
+    reg [31:0] reg2;  
+    reg [31:0] reg3;  
+    reg [31:0] reg4;  
+    reg [31:0] reg5;  
+    reg [31:0] reg6;  
+    reg [31:0] reg7;  
+    reg [31:0] reg8;  
+    reg [31:0] reg9;  
+    reg [31:0] reg10; 
+    reg [31:0] reg11; 
+    reg [31:0] reg12; 
+    reg [31:0] reg13; 
+    reg [31:0] reg14; 
+    reg [31:0] reg15; 
+    reg [31:0] reg16; 
+    reg [31:0] reg17; 
+    reg [31:0] reg18; 
+    reg [31:0] reg19; 
+    reg [31:0] reg20; 
+    reg [31:0] reg21; 
+    reg [31:0] reg22; 
+    reg [31:0] reg23; 
+    reg [31:0] reg24; 
+    reg [31:0] reg25; 
+    reg [31:0] reg26; 
+    reg [31:0] reg27; 
+    reg [31:0] reg28; 
+    reg [31:0] reg29; 
+    reg [31:0] reg30; 
+    reg [31:0] reg31;
+    reg [31:0] data_reg;
+    
 //INSTANTIATIONS
   
     FETCH FETCH(
@@ -105,7 +147,9 @@ module RISC_V(
         
         .DATA_A_OUT(DATA_A_DO), .DATA_B_OUT(DATA_B_DO), .DATA_SE_OUT(DATA_SE_DO), .INST_OUT(INST_DO),
         .CRT_WB_OUT(CRT_WB_DO), .CRT_MEM_OUT(CRT_MEM_DO), .CRT_EXE_OUT(CRT_EXE_DO),
-        .FUNCT7_OUT(FUNCT7_DO), .FUNCT3_OUT(FUNCT3_DO));
+        .FUNCT7_OUT(FUNCT7_DO), .FUNCT3_OUT(FUNCT3_DO), .reg0(reg0), .reg1(reg1), .reg2(reg2), .reg3(reg3), .reg4(reg4), .reg5(reg5), .reg6(reg6), .reg7(reg7), .reg8(reg8), .reg9(reg9), .reg10(reg10),
+        .reg11(reg11), .reg12(reg12), .reg13(reg13), .reg14(reg14), .reg15(reg15), .reg16(reg16), .reg17(reg17), .reg18(reg18), .reg19(reg19), .reg20(reg20),
+        .reg21(reg21), .reg22(reg22), .reg23(reg23), .reg24(reg24), .reg25(reg25), .reg26(reg26), .reg27(reg27), .reg28(reg28), .reg29(reg29), .reg30(reg30), .reg31(reg31));
 
     ID_EXE_PIPELINE ID_EXE_PIPELINE(
         .rst(rst), .clk(clk), .CRT_WB_IN(CRT_WB_DO), .CRT_MEM_IN(CRT_MEM_DO), .CRT_EXE_IN(CRT_EXE_DO),
@@ -150,5 +194,15 @@ module RISC_V(
     WR WR(
         .CRT_WB_IN(CRT_WB_WPO[1]), .DATA_M(READ_DATA_WPO), .DATA_E(ALU_RESULT_WPO), .DATA_OUT(DATA_WO)
     );
+    
+    disp_reg disp_reg (
+        .rst(rst), .clk(clk), .register(register), .reg0(reg0), .reg1(reg1), .reg2(reg2), .reg3(reg3), .reg4(reg4), .reg5(reg5), .reg6(reg6), .reg7(reg7), .reg8(reg8), .reg9(reg9), .reg10(reg10),
+                    .reg11(reg11), .reg12(reg12), .reg13(reg13), .reg14(reg14), .reg15(reg15), .reg16(reg16), .reg17(reg17), .reg18(reg18), .reg19(reg19), .reg20(reg20),
+                    .reg21(reg21), .reg22(reg22), .reg23(reg23), .reg24(reg24), .reg25(reg25), .reg26(reg26), .reg27(reg27), .reg28(reg28), .reg29(reg29), .reg30(reg30), .reg31(reg31), .tick_r(tick_r),
+                    .tick_l(tick_l), .data_reg(data_reg), .leds(leds));
+                    
+    Display Display (
+        .reset(rst), .clk(clk), .register(data_reg), .an0(an0), .an1(an1), .an2(an2), .an3(an3),.an4(an4), .an5(an5), .an6(an6), .an7(an7),
+        .out_disp(out_disp));
                             
 endmodule
