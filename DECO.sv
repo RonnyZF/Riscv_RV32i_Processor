@@ -37,6 +37,7 @@ module DECO(
     output [2:0] CRT_EXE_OUT,
     output [6:0] FUNCT7_OUT,
     output [2:0] FUNCT3_OUT
+    //output [31:0] rr
     );
     reg [6:0] OPCODE;
     reg [4:0] READ1;
@@ -55,6 +56,7 @@ module DECO(
     reg [11:0] IMM_S;
     reg [11:0] IMM_B;
     reg [11:0] IMM;
+    
 
     assign IMM_I = INSTRUCTION[31:20];
     assign IMM_S = {INSTRUCTION[31:25],INSTRUCTION[11:7]};
@@ -98,10 +100,25 @@ module DECO(
         .AluOp_out(CRT_EXE[2:1]),
         .AluSrc_out(CRT_EXE[0]) 
         );
-    Banco_registros REG_BANK (.RegWrite(CRT_WB_IN), .ReadRegister1(READ1),.ReadRegister2(READ2),
-                           .WriteRegister(INST), .clk(clk), .rst(rst), .WriteData(WRITE_DATA),
+    //wire [31:0] r
+    banco_reg REG_BANK (.RegWrite(CRT_WB_IN), .ReadRegister1(READ1),.ReadRegister2(READ2),
+                           .WriteRegister(INST),.rst(rst), .clk(clk), .WriteData(WRITE_DATA),
                            .ReadData1(DATA_A), .ReadData2(DATA_B));
+   // assign rr=r;                      
     Ext_Signo SIGN_EXT ( .IN_16(DATA_SE), .OUT_32(DATA_SE_EX));
+    
+    /*
+    RegisterBanc regbank(
+            .ReadData1(rdata1),
+            .ReadData2(rdata2),
+            .WriteData(writedata),
+            .ReadAddr1(muxout1),
+            .ReadAddr2(muxout2),
+            .WriteAddr(writeaddress1),
+            .RegWrite(regwrite3),
+            .clk(clk),
+            .ro(r)
+        );    */
     
     assign DATA_A_OUT = DATA_A;
     assign DATA_B_OUT = DATA_B;

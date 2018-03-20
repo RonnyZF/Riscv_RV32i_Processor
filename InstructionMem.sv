@@ -27,7 +27,7 @@ module InstructionMem(
     );
 
 	 always @* begin
-	case (Address[7:0])
+	case (Address)
 			     8: Word = 32'h00030333; 
                 16: Word = 32'h00868693; 
                 32: Word =32'h00070733;  
