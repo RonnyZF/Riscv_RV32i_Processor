@@ -24,7 +24,7 @@ module Display
 	(
 	input wire clk, reset,
 	input reg [31:0]register,
-	//input wire [3:0] reg_a, reg_b, reg_c, reg_d,reg_e, reg_f, reg_g, reg_h,
+
 	output reg an0, an1, an2, an3,an4, an5, an6, an7,
 	output reg [6:0] out_disp
     );
@@ -236,7 +236,7 @@ module Display
 				4'b1101: out_disp[6:0] = 7'b0100001;//D
 				4'b1110: out_disp[6:0] = 7'b0000110;//E
 				4'b1111: out_disp[6:0] = 7'b0001110;//F
-				default: out_disp[6:0] = 7'b0000110;
+				default: out_disp[6:0] = 7'b0111111;//-
 			endcase
 		end
 		
