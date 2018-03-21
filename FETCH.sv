@@ -18,9 +18,6 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
-
-
 module FETCH(
     input [31:0] PC_MEM,
     input clk,
@@ -33,13 +30,14 @@ module FETCH(
     reg [31:0] PC_MUX;
     //reg [31:0] PC;
     reg [31:0] DATA;
-    InstructionMem INST_MEM (.Address(PC_MUX[7:0]),.Word(DATA));
+    
+    InstructionMem INST_MEM (.Address(PC_MUX[31:0]),.Word(DATA));
     
     always @ * begin
        case (MUX_CRT)
          1'b0: PC_MUX <= PC_FETCH;
          1'b1: PC_MUX <= PC_MEM;
-         default: PC_MUX = 32'b00000000000000000000000000000001;
+         //default: PC_MUX = 32'b00000000000000000000000000000001;
    endcase
    end  
 
@@ -51,6 +49,7 @@ module FETCH(
             PC_FETCH = PC_MUX + 32'd4;
             end
             end
+            
     assign DATA_OUT = DATA;
-    assign PC_OUT = PC_FETCH;
+    assign PC_OUT = PC_MUX;
 endmodule
