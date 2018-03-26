@@ -37,6 +37,7 @@ module DECO(
     output [2:0] CRT_EXE_OUT,
     output [6:0] FUNCT7_OUT,
     output [2:0] FUNCT3_OUT,
+    
     output reg [31:0] reg0, reg1, reg2, reg3, reg4, reg5, reg6, reg7, reg8, reg9, reg10,
                     reg11, reg12, reg13, reg14, reg15, reg16, reg17, reg18, reg19, reg20,
                     reg21, reg22, reg23, reg24, reg25, reg26, reg27, reg28, reg29, reg30, reg31
@@ -76,25 +77,25 @@ module DECO(
         begin
             case(OPCODE)
             7'b0010011: // TIPO I
-            begin
-            IMM = IMM_I;
-            end
+                begin
+                IMM = IMM_I;
+                end
             7'b0100011: // TIPO S
-            begin
-            IMM = IMM_S;
-            end
+                begin
+                IMM = IMM_S;
+                end
             7'b1100011: // TIPO B
-            begin
-            IMM = IMM_B;
-            end
+                begin
+                IMM = IMM_B;
+                end
             default: 
-            begin
-               IMM = IMM_I;
-            end
+                begin
+                   IMM = IMM_I;
+                end
             endcase
        end
 
-    // InstanciaciÃ³n
+    // Instanciación
     CONTROL_UNIT CTRL_UNIT(
         .Opcode_in(OPCODE),
         .RegWrite_out(CRT_WB[0]),
@@ -113,19 +114,6 @@ module DECO(
    // assign rr=r;                      
     Ext_Signo SIGN_EXT ( .IN_16(DATA_SE), .OUT_32(DATA_SE_EX));
     
-    /*
-    RegisterBanc regbank(
-            .ReadData1(rdata1),
-            .ReadData2(rdata2),
-            .WriteData(writedata),
-            .ReadAddr1(muxout1),
-            .ReadAddr2(muxout2),
-            .WriteAddr(writeaddress1),
-            .RegWrite(regwrite3),
-            .clk(clk),
-            .ro(r)
-        );    */
-    
     assign DATA_A_OUT = DATA_A;
     assign DATA_B_OUT = DATA_B;
     assign DATA_SE_OUT = DATA_SE_EX;
@@ -137,4 +125,3 @@ module DECO(
     assign FUNCT3_OUT = FUNCT3_DATA;
     
 endmodule
-

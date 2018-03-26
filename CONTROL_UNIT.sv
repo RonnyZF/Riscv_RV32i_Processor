@@ -103,16 +103,17 @@ always @*
             end
         default:
            begin  
-                        RegWrite = 1'b0;
-                        MemWrite=1'b0;
-                        MemRead=1'b0;
-                        MemtoReg=1'b0;
-                        Branch=1'b0;
-                        AluOp=2'b00;
-                        AluSrc=1'b0; 
-                    end
+                RegWrite = 1'b0;
+                MemWrite=1'b0;
+                MemRead=1'b0;
+                MemtoReg=1'b0;
+                Branch=1'b0;
+                AluOp=2'b00;
+                AluSrc=1'b0; 
+            end
         endcase
         end
+        
     assign RegWrite_out = RegWrite;
     assign MemWrite_out = MemWrite;
     assign MemRead_out = MemRead;

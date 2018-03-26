@@ -22,6 +22,7 @@
 
 module EXE(
 // DATOS de entrada
+    input clk,
     input [31:0] DATO_A_IN,
     input [31:0] DATO_B_IN,
     input [31:0] DATO_SIGN_EXT_IN,
@@ -35,20 +36,20 @@ module EXE(
     input [2:0] FUNCT3_IN,
 
 // Datos Salida
-    output [2:0] CRT_MEM_OUT, // YA
-    output [1:0] CRT_WB_OUT, // YA
-    output [31:0] PC_NEXT_OUT, // YA
-    output ZERO_OUT, // YA
+    output [2:0] CRT_MEM_OUT, // 
+    output [1:0] CRT_WB_OUT, // 
+    output [31:0] PC_NEXT_OUT, // 
+    output ZERO_OUT, // 
     output [31:0] ALU_RESULT,
-    output [31:0] DATO_B_OUT, // YA 
-    output [4:0] INST_OUT // YA
+    output [31:0] DATO_B_OUT, // 
+    output [4:0] INST_OUT // 
     );
     
     // REGISTROS UTILIZADOS
     reg [31:0] DATO_A;
     reg [31:0] DATO_B_MUX;
     reg [31:0] DATO_SIGN_EXT;
-    reg [31:0] PC_NEXT;
+//    reg [31:0] PC_NEXT;
     reg [31:0] PC_NEXT_REG_OUT;
     reg [4:0] INST_OUT_REG;
     reg [31:0] SHIFT_2_DATA;
@@ -79,14 +80,15 @@ module EXE(
      assign CRT_MUX_ALU = CRT_EXE[0];
      assign ALU_OP = CRT_EXE[2:1];
      
-    always @ *
+    always @ (posedge clk)
         begin 
             DATO_A = DATO_A_IN;
             DATO_SIGN_EXT = DATO_SIGN_EXT_IN;
-            PC_NEXT = PC_NEXT_IN;
+//            PC_NEXT = PC_NEXT_IN;
         end
     
-    always @ * begin
+    always @ (posedge clk)
+            begin
                case (CRT_MUX_ALU)
                  1'b0: DATO_B_MUX <= DATO_B_IN;
                  1'b1: DATO_B_MUX <= DATO_SIGN_EXT_IN;
@@ -95,9 +97,10 @@ module EXE(
              end
                    
   // PC NEXT
-    always @*
+    always @ (posedge clk)
         begin
-            PC_NEXT_REG_OUT = PC_NEXT + SHIFT_2_DATA;
+//            PC_NEXT_REG_OUT = PC_NEXT + SHIFT_2_DATA;  REVISAR
+              PC_NEXT_REG_OUT = SHIFT_2_DATA; 
         end
    
    

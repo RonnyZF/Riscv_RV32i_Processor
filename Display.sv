@@ -93,6 +93,7 @@ module Display
                 an5 <= 1'b1;
                 an6 <= 1'b1;
                 an7 <= 1'b1;
+                reg_disp=4'd0;
 			end
 			
       else 

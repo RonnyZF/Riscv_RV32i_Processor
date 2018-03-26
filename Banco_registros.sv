@@ -18,9 +18,6 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
-
-
 module Banco_registros(
     input RegWrite,
     input [4:0] ReadRegister1,

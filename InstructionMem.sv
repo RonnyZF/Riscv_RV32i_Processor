@@ -18,32 +18,31 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
-
-
 module InstructionMem(
-    input logic [7:0] Address,
+    input clk,
+    input logic [31:0] Address,
     output logic [31:0] Word
     );
 
-	 always @* begin
-	case (Address)
-			     8: Word = 32'h00030333; 
-                16: Word = 32'h00868693; 
-                32: Word =32'h00070733;  
-                48: Word =32'h00050533;
-                64: Word =32'h00158593; 
-                80: Word =32'h00a58633; 
-                96: Word =32'h00050593; //salto del branch
-                112: Word =32'h00060513; 
-                128: Word =32'h00130313;
-                144: Word =32'h00a58633;
-                160: Word =32'h00b32223;
-                176: Word =32'h00130313;
-                192: Word =32'h006d61063;//beq
-                208: Word =32'h00472283;
-                224: Word =32'h00170713;
-                240: Word =32'h00472303;
+	 always @ (posedge clk)  
+	 begin
+	case (Address[31:0])
+    		     4: Word = 32'h00910193; //Addi r3,r2,9
+                 8: Word = 32'h00000033; //nop
+                12: Word = 32'h00000033; //nop 
+                16: Word = 32'h00518213; //Addi r4,r3,5
+                20: Word = 32'h00000033; //nop
+                24: Word = 32'h00000033; //nop
+                28: Word = 32'h00210093; //Addi r1,r2,2
+               112: Word = 32'h00000033; //nop
+               128: Word = 32'h00000033; //nop
+               144: Word = 32'h001182b3; //Add r5,r1,r3
+               160: Word = 32'h00000311;
+               176: Word = 32'hfed617e3;///////
+               192: Word = 32'h006d61063;//beq
+               208: Word = 32'h00472283;
+               224: Word = 32'h00170713;
+               240: Word = 32'h00472303;
                 /*
                 256: Word =32'h00170713;
                 272: Word =32'h00472383;
