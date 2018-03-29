@@ -45,9 +45,9 @@ module Alu_ctrl(
                                 default: ctrl = 4'b0000;
                             endcase
                     7'b0100000: ctrl = 4'b0110;
-                    default: ctrl = 4'b0000;
+//                    default: ctrl = 4'b0000;
                 endcase
-            default: ctrl = 4'b0000;
+//            default: ctrl = 4'b0000;
             endcase
         end            
 endmodule

@@ -23,7 +23,7 @@ module FETCH(
     input rst,
     input [31:0] PC_MEM,
     input MUX_CRT,
-    output [31:0] PC_OUT,
+//    output [31:0] PC_OUT,
     output [31:0] DATA_OUT
     );
     reg [31:0] PC_FETCH;
@@ -49,6 +49,6 @@ module FETCH(
     end
             
     assign DATA_OUT = DATA;
-    assign PC_OUT = PC_MUX;
+//    assign PC_OUT = PC_MUX;
     
 endmodule

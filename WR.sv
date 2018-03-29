@@ -32,7 +32,7 @@ module WR(
             case (MUX_CRT)
                 1'b0: DATA = DATA_M;
                 1'b1: DATA = DATA_E;
-                default: DATA = 32'd0;
+//                default: DATA = 32'd0;
             endcase
             end
    assign DATA_OUT = DATA;

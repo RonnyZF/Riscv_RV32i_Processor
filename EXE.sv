@@ -26,12 +26,12 @@ module EXE(
     input [31:0] DATO_A_IN,
     input [31:0] DATO_B_IN,
     input [31:0] DATO_SIGN_EXT_IN,
-    input [31:0] PC_NEXT_IN,
+//    input [31:0] PC_NEXT_IN,
     input [4:0] INST_IN,
     input [2:0] CRT_MEM_IN,
     input [1:0] CRT_WB_IN,
     input [2:0] CRT_EXE_IN,
-// Señales de control    
+// Seï¿½ales de control    
     input [6:0] FUNCT7_IN,
     input [2:0] FUNCT3_IN,
 
@@ -92,7 +92,7 @@ module EXE(
                case (CRT_MUX_ALU)
                  1'b0: DATO_B_MUX <= DATO_B_IN;
                  1'b1: DATO_B_MUX <= DATO_SIGN_EXT_IN;
-                 default: DATO_B_MUX <= DATO_B_IN;
+//                 default: DATO_B_MUX <= DATO_B_IN;
                endcase
              end
                    

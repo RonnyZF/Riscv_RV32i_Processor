@@ -30,8 +30,8 @@ module InstructionMem(
     		     4: Word = 32'h00910193; //Addi r3,r2,9
                  8: Word = 32'h00000033; //nop
                 12: Word = 32'h00000033; //nop 
-                16: Word = 32'h00518213; //Addi r4,r3,5
-                20: Word = 32'h00000033; //nop
+                16: Word = 32'h00518213; //Addi r4,r3,5 
+     /*           20: Word = 32'h00000033; //nop
                 24: Word = 32'h00000033; //nop
                 28: Word = 32'h00210093; //Addi r1,r2,2
                112: Word = 32'h00000033; //nop
@@ -42,7 +42,7 @@ module InstructionMem(
                192: Word = 32'h006d61063;//beq
                208: Word = 32'h00472283;
                224: Word = 32'h00170713;
-               240: Word = 32'h00472303;
+               240: Word = 32'h00472303;        */
                 /*
                 256: Word =32'h00170713;
                 272: Word =32'h00472383;
@@ -54,6 +54,7 @@ module InstructionMem(
                 368: Word =32'h00472f03;
                 384: Word =32'h00170713;
                 400: Word =32'h00472f83;*/
+            default Word = 32'h00000033;
 	endcase 
 end
 

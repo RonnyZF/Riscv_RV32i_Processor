@@ -22,19 +22,21 @@
 module IF_ID_PIPELINE(
     input rst,
     input clk,
-    input reg [31:0] PC_IN, DATA_IN,
-    output reg [31:0] PC_OUT, DATA_OUT
+//    input reg [31:0] PC_IN, DATA_IN,
+//    output reg [31:0] PC_OUT, DATA_OUT
+    input reg [31:0] DATA_IN,
+    output reg [31:0] DATA_OUT
     );
 
     always @ (posedge clk)
         if(rst)
             begin
-            PC_OUT <= 32'd0;
+            //PC_OUT <= 32'd0;
             DATA_OUT <= 32'd0;        
             end
         else
             begin
-                PC_OUT <= PC_IN;
+                //PC_OUT <= PC_IN;
                 DATA_OUT <= DATA_IN;
             end
 endmodule

@@ -61,7 +61,6 @@ module Display
 					count1<=count1 + 27'b000000000000000000000000001;
 			end
 
-
 //contador2	
 	always @ (posedge clk or posedge reset)
 
@@ -73,150 +72,133 @@ module Display
 			begin
 				if (count1==27'b000000001011110000100000000)
 					count2 <= count2 + 3'b001;
-				//else if ( count2 == 2'b11)
-					//begin
-				//		count2 <= 2'b00;
-				//		count2 <= count2 + 2'b01;
-					//end
 			end
 	
 // modulo salida de encendido display	
 
    always @(posedge clk or posedge reset)
+        begin
 		if (reset)
-			begin
-				an0 <= 1'b1;
-				an1 <= 1'b1;
-				an2 <= 1'b1;
-				an3 <= 1'b1;
-				an4 <= 1'b1;
+                begin
+                an0 <= 1'b1;
+                an1 <= 1'b1;
+                an2 <= 1'b1;
+                an3 <= 1'b1;
+                an4 <= 1'b1;
                 an5 <= 1'b1;
                 an6 <= 1'b1;
                 an7 <= 1'b1;
                 reg_disp=4'd0;
-			end
+                end
 			
-      else 
-			if(count2 == 3'b000)
-				begin
-					an0 <= 1'b0;
-					an1 <= 1'b1;
-					an2 <= 1'b1;
-					an3 <= 1'b1;
-					an4 <= 1'b1;
-                    an5 <= 1'b1;
-                    an6 <= 1'b1;
-                    an7 <= 1'b1;
-					reg_disp=reg_h;
-				end
-			else 
-				if (count2 == 3'b001)
-					begin
-					
-						an0 <= 1'b1;
-						an1 <= 1'b0;
-						an2 <= 1'b1;
-						an3 <= 1'b1;
-						an4 <= 1'b1;
-                        an5 <= 1'b1;
-                        an6 <= 1'b1;
-                        an7 <= 1'b1;
-						reg_disp=reg_g;
-					end
-                else 
-                    if (count2 == 3'b010)
-                        begin
-                            an0 <= 1'b1;
-                            an1 <= 1'b1;
-                            an2 <= 1'b0;
-                            an3 <= 1'b1;
-                            an4 <= 1'b1;
-                            an5 <= 1'b1;
-                            an6 <= 1'b1;
-                            an7 <= 1'b1;
-                            reg_disp=reg_f;
-                        end
-                    else
-                        if (count2 == 3'b011)
-                            begin
-                                an0 <= 1'b1;
-                                an1 <= 1'b1;
-                                an2 <= 1'b1;
-                                an3 <= 1'b0;
-                                an4 <= 1'b1;
-                                an5 <= 1'b1;
-                                an6 <= 1'b1;
-                                an7 <= 1'b1;
-                                reg_disp=reg_e;
-                            end
-                        else
-                            if (count2 == 3'b100)
-                                begin
-                                    an0 <= 1'b1;
-                                    an1 <= 1'b1;
-                                    an2 <= 1'b1;
-                                    an3 <= 1'b1;
-                                    an4 <= 1'b0;
-                                    an5 <= 1'b1;
-                                    an6 <= 1'b1;
-                                    an7 <= 1'b1;
-                                    reg_disp=reg_d;
-                                end
-                            else
-                                if (count2 == 3'b101)
-                                    begin
-                                        an0 <= 1'b1;
-                                        an1 <= 1'b1;
-                                        an2 <= 1'b1;
-                                        an3 <= 1'b1;
-                                        an4 <= 1'b1;
-                                        an5 <= 1'b0;
-                                        an6 <= 1'b1;
-                                        an7 <= 1'b1;
-                                        reg_disp=reg_c;
-                                  
-                                    end
-
-                                 else
-                                      if (count2 == 3'b110)
-                                           begin
-                                               an0 <= 1'b1;
-                                               an1 <= 1'b1;
-                                               an2 <= 1'b1;
-                                               an3 <= 1'b1;
-                                               an4 <= 1'b1;
-                                               an5 <= 1'b1;
-                                               an6 <= 1'b0;
-                                               an7 <= 1'b1;
-                                               reg_disp=reg_b;
-                                           
-                                           end
-                                    else
-                                        if (count2 == 3'b111)
-                                            begin
-                                              an0 <= 1'b1;
-                                              an1 <= 1'b1;
-                                              an2 <= 1'b1;
-                                              an3 <= 1'b1;
-                                              an4 <= 1'b1;
-                                              an5 <= 1'b1;
-                                              an6 <= 1'b1;
-                                              an7 <= 1'b0;
-                                              reg_disp=reg_a;
-                                     
-                                            end
-                                        else
-                                            begin
-                                                an0 <= 1'b1;
-                                                an1 <= 1'b1;
-                                                an2 <= 1'b1;
-                                                an3 <= 1'b1;
-                                                an4 <= 1'b1;
-                                                an5 <= 1'b1;
-                                                an6 <= 1'b1;
-                                                an7 <= 1'b1;
-                                            end
-                                        
+      else if(count2 == 3'b000)
+                begin
+                an0 <= 1'b0;
+                an1 <= 1'b1;
+                an2 <= 1'b1;
+                an3 <= 1'b1;
+                an4 <= 1'b1;
+                an5 <= 1'b1;
+                an6 <= 1'b1;
+                an7 <= 1'b1;
+                reg_disp=reg_h;
+                end
+        else if (count2 == 3'b001)
+                begin
+                an0 <= 1'b1;
+                an1 <= 1'b0;
+                an2 <= 1'b1;
+                an3 <= 1'b1;
+                an4 <= 1'b1;
+                an5 <= 1'b1;
+                an6 <= 1'b1;
+                an7 <= 1'b1;
+                reg_disp=reg_g;
+                end
+        else if (count2 == 3'b010)
+                begin
+                an0 <= 1'b1;
+                an1 <= 1'b1;
+                an2 <= 1'b0;
+                an3 <= 1'b1;
+                an4 <= 1'b1;
+                an5 <= 1'b1;
+                an6 <= 1'b1;
+                an7 <= 1'b1;
+                reg_disp=reg_f;
+                end
+        else if (count2 == 3'b011)
+                begin
+                an0 <= 1'b1;
+                an1 <= 1'b1;
+                an2 <= 1'b1;
+                an3 <= 1'b0;
+                an4 <= 1'b1;
+                an5 <= 1'b1;
+                an6 <= 1'b1;
+                an7 <= 1'b1;
+                reg_disp=reg_e;
+                end
+        else if (count2 == 3'b100)
+                begin
+                an0 <= 1'b1;
+                an1 <= 1'b1;
+                an2 <= 1'b1;
+                an3 <= 1'b1;
+                an4 <= 1'b0;
+                an5 <= 1'b1;
+                an6 <= 1'b1;
+                an7 <= 1'b1;
+                reg_disp=reg_d;
+                end
+        else if (count2 == 3'b101)
+                begin
+                an0 <= 1'b1;
+                an1 <= 1'b1;
+                an2 <= 1'b1;
+                an3 <= 1'b1;
+                an4 <= 1'b1;
+                an5 <= 1'b0;
+                an6 <= 1'b1;
+                an7 <= 1'b1;
+                reg_disp=reg_c;
+                end
+         else if (count2 == 3'b110)
+                begin
+                an0 <= 1'b1;
+                an1 <= 1'b1;
+                an2 <= 1'b1;
+                an3 <= 1'b1;
+                an4 <= 1'b1;
+                an5 <= 1'b1;
+                an6 <= 1'b0;
+                an7 <= 1'b1;
+                reg_disp=reg_b;
+                end
+        else if (count2 == 3'b111)
+                begin
+                an0 <= 1'b1;
+                an1 <= 1'b1;
+                an2 <= 1'b1;
+                an3 <= 1'b1;
+                an4 <= 1'b1;
+                an5 <= 1'b1;
+                an6 <= 1'b1;
+                an7 <= 1'b0;
+                reg_disp=reg_a;
+                end
+        else
+                begin
+                an0 <= 1'b1;
+                an1 <= 1'b1;
+                an2 <= 1'b1;
+                an3 <= 1'b1;
+                an4 <= 1'b1;
+                an5 <= 1'b1;
+                an6 <= 1'b1;
+                an7 <= 1'b1;
+                end
+        end
                                 
 	always @*
 		begin

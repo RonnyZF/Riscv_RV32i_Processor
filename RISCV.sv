@@ -28,13 +28,15 @@ module RISC_V(
     
     );
     
-//Declaración de variables
+//Declaraciï¿½n de variables
 
     //FETCH STAGE OUTPUTS (_FO)
-    reg [31:0] PC_FO, DATA_FO;
+//    reg [31:0] PC_FO, DATA_FO;
+    reg [31:0] DATA_FO;   
     
-    //DECODE PIPELINE OUTPUTS (_DPO)
-    reg [31:0] PC_DPO, DATA_DPO;
+    //FETCH-DECODE PIPELINE OUTPUTS (_DPO)
+//    reg [31:0] PC_DPO, DATA_DPO;
+    reg [31:0] DATA_DPO;    
     
     //DECODE STAGE OUTPUTS(_DO)
     reg [31:0] DATA_A_DO;
@@ -47,11 +49,11 @@ module RISC_V(
     reg [6:0]  FUNCT7_DO;
     reg [2:0]  FUNCT3_DO;
     
-    //EXECUTE PIPELINE OUTPUTS (_EPO)
+    //DECODE-EXECUTE PIPELINE OUTPUTS (_EPO)
     reg [1:0]  CRT_WB_EPO;
     reg [2:0]  CRT_MEM_EPO;
     reg [2:0]  CRT_EXE_EPO;
-    reg [31:0] PC_EPO;
+//    reg [31:0] PC_EPO;
     reg [31:0] DATA_A_EPO;
     reg [31:0] DATA_B_EPO;
     reg [31:0] DATA_SE_EPO;
@@ -68,7 +70,7 @@ module RISC_V(
     reg [31:0] DATO_B_EO; 
     reg [4:0] INST_EO;
     
-    //MEMORY PIPELINE OUTPUTS (_MPO)
+    //EXECUTE-MEMORY PIPELINE OUTPUTS (_MPO)
     reg [1:0] CRT_WB_MPO;
     reg [2:0] CRT_MEM_MPO;
     reg [31:0] PC_MPO;
@@ -84,7 +86,7 @@ module RISC_V(
     reg BRANCH_MO;
     reg [1:0] CRT_WB_MO;
     
-    //WRITEBACK PIPELINE OUTPUTS (_WPO)
+    //MEMORY-WRITEBACK PIPELINE OUTPUTS (_WPO)
     reg  [1:0]  CRT_WB_WPO; 
     reg  [31:0] READ_DATA_WPO;
     reg  [31:0] ALU_RESULT_WPO;
@@ -93,49 +95,18 @@ module RISC_V(
     //WRITEBACK STAGE OUTPUTS (_WO)
     reg [31:0] DATA_WO;
     
-    //Lógica display
-    reg [31:0] reg0;
-    reg [31:0] reg1;   
-    reg [31:0] reg2;  
-    reg [31:0] reg3;  
-    reg [31:0] reg4;  
-    reg [31:0] reg5;  
-    reg [31:0] reg6;  
-    reg [31:0] reg7;  
-    reg [31:0] reg8;  
-    reg [31:0] reg9;  
-    reg [31:0] reg10; 
-    reg [31:0] reg11; 
-    reg [31:0] reg12; 
-    reg [31:0] reg13; 
-    reg [31:0] reg14; 
-    reg [31:0] reg15; 
-    reg [31:0] reg16; 
-    reg [31:0] reg17; 
-    reg [31:0] reg18; 
-    reg [31:0] reg19; 
-    reg [31:0] reg20; 
-    reg [31:0] reg21; 
-    reg [31:0] reg22; 
-    reg [31:0] reg23; 
-    reg [31:0] reg24; 
-    reg [31:0] reg25; 
-    reg [31:0] reg26; 
-    reg [31:0] reg27; 
-    reg [31:0] reg28; 
-    reg [31:0] reg29; 
-    reg [31:0] reg30; 
-    reg [31:0] reg31;
+    //Lï¿½gica display
+    reg [31:0] reg0,reg1,reg2,reg3,reg4,reg5,reg6,reg7,reg8,reg9,reg10,reg11,reg12,reg13,reg14,reg15,reg16,reg17,reg18,reg19,reg20,reg21,reg22,reg23,reg24,reg25,reg26,reg27,reg28,reg29,reg30,reg31;   
     reg [31:0] data_reg;
     reg tick_r, tick_l;
     
 //INSTANTIATIONS
   
     FETCH FETCH(
-        .PC_MEM(PC_MPO), .rst(rst), .clk(clk),.MUX_CRT(BRANCH_MO), .PC_OUT(PC_FO), .DATA_OUT(DATA_FO));
+        .PC_MEM(PC_MPO), .rst(rst), .clk(clk),.MUX_CRT(BRANCH_MO), /*.PC_OUT(PC_FO),*/ .DATA_OUT(DATA_FO));
         
     IF_ID_PIPELINE IF_ID_PIPELINE(
-            .rst(rst), .clk(clk), .PC_IN(PC_FO), .DATA_IN(DATA_FO), .PC_OUT(PC_DPO), .DATA_OUT(DATA_DPO)
+            .rst(rst), .clk(clk), /*.PC_IN(PC_FO),*/ .DATA_IN(DATA_FO), /*.PC_OUT(PC_DPO),*/ .DATA_OUT(DATA_DPO)
             );
      
     DECO DECO(
@@ -150,17 +121,17 @@ module RISC_V(
     ID_EXE_PIPELINE ID_EXE_PIPELINE(
         .rst(rst), .clk(clk), .CRT_WB_IN(CRT_WB_DO), .CRT_MEM_IN(CRT_MEM_DO), .CRT_EXE_IN(CRT_EXE_DO),
          
-        .PC_IN(PC_DPO), .DATA_A_IN(DATA_A_DO), .DATA_B_IN(DATA_B_DO), .DATA_SE_IN(DATA_SE_DO), .INST_IN(INST_DO),
+        /*.PC_IN(PC_DPO),*/ .DATA_A_IN(DATA_A_DO), .DATA_B_IN(DATA_B_DO), .DATA_SE_IN(DATA_SE_DO), .INST_IN(INST_DO),
         .FUNCT7_IN(FUNCT7_DO), .FUNCT3_IN(FUNCT3_DO),
         
-        .CRT_WB_OUT(CRT_WB_EPO), .CRT_MEM_OUT(CRT_MEM_EPO), .CRT_EXE_OUT(CRT_EXE_EPO), .PC_OUT(PC_EPO), 
+        .CRT_WB_OUT(CRT_WB_EPO), .CRT_MEM_OUT(CRT_MEM_EPO), .CRT_EXE_OUT(CRT_EXE_EPO), /*.PC_OUT(PC_EPO),*/ 
         .DATA_A_OUT(DATA_A_EPO), .DATA_B_OUT(DATA_B_EPO), .DATA_SE_OUT(DATA_SE_EPO), .INST_OUT(INST_EPO),
         .FUNCT7_OUT(FUNCT7_EPO),.FUNCT3_OUT(FUNCT3_EPO)    
     );
           
     EXE EXE(
         //Datos de entrada
-        .clk(clk), .DATO_A_IN(DATA_A_EPO), .DATO_B_IN(DATA_B_EPO), .DATO_SIGN_EXT_IN(DATA_SE_EPO), .PC_NEXT_IN(PC_EPO), .INST_IN(INST_EPO), .CRT_MEM_IN(CRT_MEM_EPO), .CRT_WB_IN(CRT_WB_EPO),
+        .clk(clk), .DATO_A_IN(DATA_A_EPO), .DATO_B_IN(DATA_B_EPO), .DATO_SIGN_EXT_IN(DATA_SE_EPO), /*.PC_NEXT_IN(PC_EPO),*/ .INST_IN(INST_EPO), .CRT_MEM_IN(CRT_MEM_EPO), .CRT_WB_IN(CRT_WB_EPO),
         .FUNCT7_IN(FUNCT7_EPO), .FUNCT3_IN(FUNCT3_EPO), .CRT_EXE_IN(CRT_EXE_EPO),
         // Datos Salida
         .CRT_MEM_OUT(CRT_MEM_EO), .CRT_WB_OUT(CRT_WB_EO), .PC_NEXT_OUT(PC_NEXT_EO), .ZERO_OUT(ZERO_EO), .ALU_RESULT(ALU_RESULT_EO), .DATO_B_OUT(DATO_B_EO), .INST_OUT(INST_EO)
