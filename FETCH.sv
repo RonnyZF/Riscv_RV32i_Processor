@@ -32,20 +32,31 @@ module FETCH(
     
     InstructionMem INST_MEM (.clk(clk),.Address(PC_MUX[31:0]),.Word(DATA));
     
-    always @ (posedge clk) 
-    begin
-       case (MUX_CRT)
-         1'b0: PC_MUX <= PC_FETCH;
-         1'b1: PC_MUX <= PC_MEM;
-       endcase
-   end  
+//    always @ (posedge clk) 
+//    begin
+//       case (MUX_CRT)
+//         1'b0: PC_MUX <= PC_FETCH;
+//         1'b1: 
+//               begin
+//               PC_MUX = PC_MEM;
+//               PC_FETCH = PC_MEM;
+//               end
+//       endcase
+//   end  
 
+            
     always @ (posedge clk)
     begin
         if (rst)
-            PC_FETCH = 32'd0;
+            PC_FETCH <= 32'd0;
+        else if (MUX_CRT==1'b1)
+            begin
+            PC_FETCH = PC_MEM;
+            PC_MUX = PC_MEM;
+            end
         else
-            PC_FETCH = PC_MUX + 32'd4;
+            PC_FETCH <= PC_MUX + 32'd4;
+             PC_MUX <= PC_FETCH;
     end
             
     assign DATA_OUT = DATA;
