@@ -27,7 +27,7 @@ module InstructionMem(
 	 always @ (posedge clk)  
 	 begin
 	case (Address[31:0])
-    		4: Word = 32'h00100093; //Addi r1,zero,1
+    		     4: Word = 32'h00100093; //Addi r1,zero,1
                 8: Word = 32'h00200113; //Addi r2,zero,2 
                 12: Word = 32'h00300193; //Addi r3,zero,3
                 16: Word = 32'h00400213; //Addi r4,zero,4
@@ -39,6 +39,7 @@ module InstructionMem(
                 44: Word = 32'h404284B3; //SUB r9,r5,r4  10 - 4
                 48: Word = 32'h0032F533; //AND r10,r5,r3  1010 & 0011 
                 52: Word = 32'h00522223; //SW r5,4(r4) posición 8 de men tendra un 10
+                56: Word = 32'h00821423; //SH r8,8(r4) posición 12 de men tendra un 5 
             default Word = 32'h00000000;
 	endcase 
 end
