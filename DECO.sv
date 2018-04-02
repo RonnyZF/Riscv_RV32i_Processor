@@ -33,7 +33,7 @@ module DECO(
     output [31:0] DATA_SE_OUT,
     output [4:0] INST_OUT,
     output [1:0] CRT_WB_OUT,
-    output [2:0] CRT_MEM_OUT,
+    output [4:0] CRT_MEM_OUT,
     output [2:0] CRT_EXE_OUT,
     output [6:0] FUNCT7_OUT,
     output [2:0] FUNCT3_OUT,
@@ -52,7 +52,7 @@ module DECO(
     reg [31:0] DATA_A;
     reg [31:0] DATA_B;
     reg [1:0] CRT_WB;
-    reg [2:0] CRT_MEM;
+    reg [4:0] CRT_MEM;
     reg [2:0] CRT_EXE;
     reg [6:0] FUNCT7_DATA;
     reg [2:0] FUNCT3_DATA;
@@ -73,7 +73,7 @@ module DECO(
     assign FUNCT7_DATA = INSTRUCTION [31:25];
     assign FUNCT3_DATA = INSTRUCTION [14:12];
     
-    always @*
+    always @ *
         begin
             case(OPCODE)
             7'b0010011: // TIPO I
@@ -95,7 +95,17 @@ module DECO(
             endcase
        end
 
-    // Instanciación
+
+    always @ *
+        begin
+        if (FUNCT3_DATA==000)
+            CRT_MEM [4:3] = 2'b01;
+        else if (FUNCT3_DATA==001)
+            CRT_MEM [4:3] = 2'b10;            
+        else if (FUNCT3_DATA==100)
+            CRT_MEM [4:3] = 2'b11;
+        end
+    // Instanciaciï¿½n
     CONTROL_UNIT CTRL_UNIT(
         .Opcode_in(OPCODE),
         .RegWrite_out(CRT_WB[0]),

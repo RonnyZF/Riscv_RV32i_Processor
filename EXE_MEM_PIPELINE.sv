@@ -23,7 +23,7 @@ module EXE_MEN_PIPELINE(
     input rst,
     input clk,
     input [1:0]  CRT_WB_IN,
-    input [2:0]  CRT_MEM_IN,
+    input [4:0]  CRT_MEM_IN,
     input [31:0] PC_IN,
     input        ZERO_IN,
     input [31:0] ALU_RESULT_IN,
@@ -31,7 +31,7 @@ module EXE_MEN_PIPELINE(
     input [4:0]  INST_IN,
     
     output reg [1:0]  CRT_WB_OUT,
-    output reg [2:0]  CRT_MEM_OUT,
+    output reg [4:0]  CRT_MEM_OUT,
     output reg [31:0] PC_OUT,
     output reg        ZERO_OUT,
     output reg [31:0] ALU_RESULT_OUT,
@@ -39,7 +39,7 @@ module EXE_MEN_PIPELINE(
     output reg [4:0]  INST_OUT
     );
       
-    always @ (negedge clk)
+    always @ (posedge clk)
       begin
           if (rst)
               begin

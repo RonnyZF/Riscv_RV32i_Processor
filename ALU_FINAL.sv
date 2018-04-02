@@ -22,6 +22,7 @@
 
 
 module ALU_FINAL(
+    input clk,
     input [31:0] a,
     input [31:0] b,
     input [1:0] Alu_op,
@@ -42,6 +43,7 @@ module ALU_FINAL(
 	 );
 	 
 	 Alu_ctrl C2(
+	 .clk(clk),
 	 .Alu_op(Alu_op),
 	 .funct7(funct7),
 	 .funct3(funct3),

@@ -22,7 +22,7 @@ module ID_EXE_PIPELINE(
     input rst,
     input clk,
     input [1:0]  CRT_WB_IN,
-    input [2:0]  CRT_MEM_IN,
+    input [4:0]  CRT_MEM_IN,
     input [2:0]  CRT_EXE_IN,
 //    input [31:0] PC_IN,
     input [31:0] DATA_A_IN,
@@ -33,7 +33,7 @@ module ID_EXE_PIPELINE(
     input [2:0]  FUNCT3_IN,
     
     output reg [1:0]  CRT_WB_OUT,
-    output reg [2:0]  CRT_MEM_OUT,
+    output reg [4:0]  CRT_MEM_OUT,
     output reg [2:0]  CRT_EXE_OUT,
 //    output reg [31:0] PC_OUT,
     output reg [31:0] DATA_A_OUT,

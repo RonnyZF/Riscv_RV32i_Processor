@@ -23,7 +23,7 @@ module MEM(
     // Entradas control
     input clk,
     input rst,
-    input [2:0] CRT_MEM_IN,
+    input [4:0] CRT_MEM_IN,
     input [1:0] CRT_WB_IN,
     // Datos
     input [31:0] ADDRESS_IN, 
@@ -40,7 +40,7 @@ module MEM(
 
     //Registros intermedios
     reg [31:0] DATA;
-    reg [2:0] CRT_MEM;
+    reg [4:0] CRT_MEM;
     reg Branch;
     reg [4:0] INST;
     reg [2:0] CRT_WB;
@@ -53,10 +53,14 @@ module MEM(
     assign CRT_MEM = CRT_MEM_IN;
     assign INST = INST_IN;
     assign CRT_WB = CRT_WB_IN;
+    
     always @ (posedge clk)
       if (CRT_MEM[0])
         begin
-            Branch = ZERO_IN & CRT_MEM[0];
+            if (CRT_MEM[4:3]==2'b01)
+                Branch = ZERO_IN & CRT_MEM[0];
+            else if (CRT_MEM[4:3]==2'b10)
+                Branch = ~ZERO_IN & CRT_MEM[0];
         end
      else
         begin

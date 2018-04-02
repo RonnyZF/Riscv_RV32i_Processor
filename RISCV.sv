@@ -44,14 +44,14 @@ module RISC_V(
     reg [31:0] DATA_SE_DO;
     reg [4:0]  INST_DO;
     reg [1:0]  CRT_WB_DO;
-    reg [2:0]  CRT_MEM_DO;
+    reg [4:0]  CRT_MEM_DO;
     reg [2:0]  CRT_EXE_DO;
     reg [6:0]  FUNCT7_DO;
     reg [2:0]  FUNCT3_DO;
     
     //DECODE-EXECUTE PIPELINE OUTPUTS (_EPO)
     reg [1:0]  CRT_WB_EPO;
-    reg [2:0]  CRT_MEM_EPO;
+    reg [4:0]  CRT_MEM_EPO;
     reg [2:0]  CRT_EXE_EPO;
 //    reg [31:0] PC_EPO;
     reg [31:0] DATA_A_EPO;
@@ -62,7 +62,7 @@ module RISC_V(
     reg [2:0] FUNCT3_EPO;
     
     //EXECUTE STAGE OUTPUTS (_EO)
-    reg [2:0] CRT_MEM_EO;
+    reg [4:0] CRT_MEM_EO;
     reg [1:0] CRT_WB_EO;
     reg [31:0] PC_NEXT_EO;
     reg ZERO_EO;
@@ -72,7 +72,7 @@ module RISC_V(
     
     //EXECUTE-MEMORY PIPELINE OUTPUTS (_MPO)
     reg [1:0] CRT_WB_MPO;
-    reg [2:0] CRT_MEM_MPO;
+    reg [4:0] CRT_MEM_MPO;
     reg [31:0] PC_MPO;
     reg ZERO_MPO;
     reg [31:0] ALU_RESULT_MPO;

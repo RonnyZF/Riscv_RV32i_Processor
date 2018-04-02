@@ -21,14 +21,14 @@
 
 
 module ALU(
-   input [31:0] a,
+    input [31:0] a,
     input [31:0] b,
     input [3:0] ctrl,
     output zero,
     output reg [31:0] result
     );
 	 
-	 always @ * begin
+	 always @ (*) begin
 		case (ctrl)
 			4'b0000: result = a & b;
 			4'b0001: result = a | b;

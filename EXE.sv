@@ -28,7 +28,7 @@ module EXE(
     input [31:0] DATO_SIGN_EXT_IN,
 //    input [31:0] PC_NEXT_IN,
     input [4:0] INST_IN,
-    input [2:0] CRT_MEM_IN,
+    input [4:0] CRT_MEM_IN,
     input [1:0] CRT_WB_IN,
     input [2:0] CRT_EXE_IN,
 // Se�ales de control    
@@ -36,7 +36,7 @@ module EXE(
     input [2:0] FUNCT3_IN,
 
 // Datos Salida
-    output [2:0] CRT_MEM_OUT, // 
+    output [4:0] CRT_MEM_OUT, // 
     output [1:0] CRT_WB_OUT, // 
     output [31:0] PC_NEXT_OUT, // 
     output ZERO_OUT, // 
@@ -64,7 +64,7 @@ module EXE(
    // INSTANCIA
    // INSTANCIA
     SHIFTER INS_SHIFTER ( .In( DATO_SIGN_EXT), .Out(SHIFT_2_DATA));
-    ALU_FINAL INS_ALU (.a(DATO_A),.b(DATO_B_MUX), .Alu_op(ALU_OP), .funct7(FUNCT7_DATA), .funct3(FUNCT3_DATA),
+    ALU_FINAL INS_ALU (.clk(clk), .a(DATO_A),.b(DATO_B_MUX), .Alu_op(ALU_OP), .funct7(FUNCT7_DATA), .funct3(FUNCT3_DATA),
                        .zero(ZERO_REG),.result(ALU_DATO));
                        
     // DATOS QUE PASAN SIN CAMBIOS 

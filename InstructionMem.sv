@@ -41,8 +41,16 @@ module InstructionMem(
                 60: Word = 32'h0032F533; //AND r10,r5,r3  1010 & 0011 
                 64: Word = 32'h00522223; //SW r5,4(r4) posición 8 de men tendra un 10
                 68: Word = 32'h00821423; //SH r8,8(r4) posición 12 de men tendra un 5 
-                72: Word = 32'h004F8463; //BEQ r31,r4,8
-//                72: Word = 32'h001F9663; //BNE r31,r1,12 
+//                12: Word = 32'h00000033; //NOOP
+
+//                72: Word = 32'h004F8463; //BEQ r31,r4,8  --> Si se va a dar
+//                72: Word = 32'h001F8463; //BEQ r31,r1,8  --> No se va a dar
+
+                72: Word = 32'h001F9463; //BNE r31,r1,12 --> Si se va a dar
+//                72: Word = 32'h004F9463; //BNE r31,r4,12 --> NO se va a dar
+
+//                72: Word = 32'h001F0C463; //BLT r1,r31,8 
+//                72: Word = 32'h001FC463; //BLT r31,r1,8  
             default Word = 32'h00000000;
 	endcase 
 end
@@ -50,5 +58,3 @@ end
 
 
 endmodule
-
-
