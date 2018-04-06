@@ -32,76 +32,78 @@ module Banco_registros(
 				reg11, reg12, reg13, reg14, reg15, reg16, reg17, reg18, reg19, reg20,
 				reg21, reg22, reg23, reg24, reg25, reg26, reg27, reg28, reg29, reg30, reg31
 	);			 
+	
 		always @(negedge clk) begin
-			if (rst) begin
-				reg0  = 32'h00000000;
-				reg1  = 32'h00000000;
-				reg2  = 32'h00000000;
-				reg3  = 32'h00000000;
-				reg4  = 32'h00000000;
-				reg5  = 32'h00000000;
-				reg6  = 32'h00000000;
-				reg7  = 32'h00000000;
-				reg8  = 32'h00000000;
-				reg9  = 32'h00000000;
-				reg10 = 32'h00000000;
-				reg11 = 32'h00000000;
-				reg12 = 32'h00000000;
-				reg13 = 32'h00000000;
-				reg14 = 32'h00000000;
-				reg15 = 32'h00000000;
-				reg16 = 32'h00000000;
-				reg17 = 32'h00000000;
-				reg18 = 32'h00000000;
-				reg19 = 32'h00000000;
-				reg20 = 32'h00000000;
-				reg21 = 32'h00000000;
-				reg22 = 32'h00000000;
-				reg23 = 32'h00000000;
-				reg24 = 32'h00000000;
-				reg25 = 32'h00000000;
-				reg26 = 32'h00000000;
-				reg27 = 32'h00000000;
-				reg28 = 32'h00000000;
-				reg29 = 32'h00000000;
-				reg30 = 32'h00000000;
-				reg31 = 32'h00000000;
-			end
+			if (rst) 
+			     begin
+                    reg0  = 32'h00000000;
+                    reg1  = 32'h00000000;
+                    reg2  = 32'h00000000;
+                    reg3  = 32'h00000000;
+                    reg4  = 32'h00000000;
+                    reg5  = 32'h00000000;
+                    reg6  = 32'h00000000;
+                    reg7  = 32'h00000000;
+                    reg8  = 32'h00000000;
+                    reg9  = 32'h00000000;
+                    reg10 = 32'h00000000;
+                    reg11 = 32'h00000000;
+                    reg12 = 32'h00000000;
+                    reg13 = 32'h00000000;
+                    reg14 = 32'h00000000;
+                    reg15 = 32'h00000000;
+                    reg16 = 32'h00000000;
+                    reg17 = 32'h00000000;
+                    reg18 = 32'h00000000;
+                    reg19 = 32'h00000000;
+                    reg20 = 32'h00000000;
+                    reg21 = 32'h00000000;
+                    reg22 = 32'h00000000;
+                    reg23 = 32'h00000000;
+                    reg24 = 32'h00000000;
+                    reg25 = 32'h00000000;
+                    reg26 = 32'h00000000;
+                    reg27 = 32'h00000000;
+                    reg28 = 32'h00000000;
+                    reg29 = 32'h00000000;
+                    reg30 = 32'h00000000;
+                    reg31 = 32'h00000000;
+                end
 			else begin
 				if (RegWrite)
 					case(WriteRegister)
-						5'd0:  reg0  = WriteData;
-						5'd1:  reg1  = WriteData;
-						5'd2:  reg2  = WriteData;
-						5'd3:  reg3  = WriteData;
-						5'd4:  reg4  = WriteData;
-						5'd5:  reg5  = WriteData;
-						5'd6:  reg6  = WriteData;
-						5'd7:  reg7  = WriteData;
-						5'd8:  reg8  = WriteData;
-						5'd9:  reg9  = WriteData;
-						5'd10: reg10 = WriteData;
-						5'd11: reg11 = WriteData;
-						5'd12: reg12 = WriteData;
-						5'd13: reg13 = WriteData;
-						5'd14: reg14 = WriteData;
-						5'd15: reg15 = WriteData;
-						5'd16: reg16 = WriteData;
-						5'd17: reg17 = WriteData;
-						5'd18: reg18 = WriteData;
-						5'd19: reg19 = WriteData;
-						5'd20: reg20 = WriteData;
-						5'd21: reg21 = WriteData;
-						5'd22: reg22 = WriteData;
-						5'd23: reg23 = WriteData;
-						5'd24: reg24 = WriteData;
-						5'd25: reg25 = WriteData;
-						5'd26: reg26 = WriteData;
-						5'd27: reg27 = WriteData;
-						5'd28: reg28 = WriteData;
-						5'd29: reg29 = WriteData;
-						5'd30: reg30 = WriteData;
-						5'd31: reg31 = WriteData;
+                    5'd0:  reg0  = WriteData;
+                    5'd1:  reg1  = WriteData;
+                    5'd2:  reg2  = WriteData;
+                    5'd3:  reg3  = WriteData;
+                    5'd4:  reg4  = WriteData;
+                    5'd5:  reg5  = WriteData;
+                    5'd6:  reg6  = WriteData;
+                    5'd7:  reg7  = WriteData;
+                    5'd8:  reg8  = WriteData;
+                    5'd9:  reg9  = WriteData;
+                    5'd10: reg10 = WriteData;
+                    5'd11: reg11 = WriteData;
+                    5'd12: reg12 = WriteData;
+                    5'd13: reg13 = WriteData;
+                    5'd14: reg14 = WriteData;
+                    5'd15: reg15 = WriteData;
+                    5'd16: reg16 = WriteData;
+                    5'd17: reg17 = WriteData;
+                    5'd18: reg18 = WriteData;
+                    5'd19: reg19 = WriteData;
+                    5'd20: reg20 = WriteData;
+                    5'd21: reg21 = WriteData;
+                    5'd22: reg22 = WriteData;
+                    5'd23: reg23 = WriteData;
+                    5'd24: reg24 = WriteData;
+                    5'd25: reg25 = WriteData;
+                    5'd26: reg26 = WriteData;
+                    5'd27: reg27 = WriteData;
+                    5'd28: reg28 = WriteData;
+                    5'd29: reg29 = WriteData;
+                    5'd30: reg30 = WriteData;
+                    5'd31: reg31 = WriteData;
 				endcase
 			end
 		end

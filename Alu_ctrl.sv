@@ -30,12 +30,11 @@ module Alu_ctrl(
     always @ (posedge clk)
         begin
             case (Alu_op)
-            2'b00:// ctrl = 4'b0010;
+            2'b00:
                 case(funct3)
                     3'b000: ctrl = 4'b0010;
                     3'b111: ctrl = 4'b0000;
                     3'b110: ctrl = 4'b0001;
-//                    default: ctrl = 4'b0000;
                     default: ctrl = 4'b0010;
                 endcase             
             2'b01: 
@@ -43,18 +42,16 @@ module Alu_ctrl(
                     3'b000: ctrl = 4'b0110;
                     3'b001: ctrl = 4'b0110;
                     3'b100: ctrl = 4'b0110;
-//                    default: ctrl = 4'b0000;
                     default: ctrl = 4'b0010;
                 endcase  
             2'b11: ctrl = 4'b0110;
-            2'b10: //2'b11: REVISAR
+            2'b10: 
                 case(funct7)
                     7'b0000000:
                             case(funct3)
                                 3'b000: ctrl = 4'b0010;
                                 3'b111: ctrl = 4'b0000;
                                 3'b110: ctrl = 4'b0001;
-//                                default: ctrl = 4'b0000;
                                 default: ctrl = 4'b0010;
                             endcase
                     7'b0100000: ctrl = 4'b0110;

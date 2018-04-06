@@ -28,14 +28,12 @@ module RISC_V(
     
     );
     
-//Declaraci�n de variables
+    //VARIABLES
 
     //FETCH STAGE OUTPUTS (_FO)
-//    reg [31:0] PC_FO, DATA_FO;
     reg [31:0] DATA_FO;   
     
     //FETCH-DECODE PIPELINE OUTPUTS (_DPO)
-//    reg [31:0] PC_DPO, DATA_DPO;
     reg [31:0] DATA_DPO;    
     
     //DECODE STAGE OUTPUTS(_DO)
@@ -53,7 +51,7 @@ module RISC_V(
     reg [1:0]  CRT_WB_EPO;
     reg [4:0]  CRT_MEM_EPO;
     reg [2:0]  CRT_EXE_EPO;
-//    reg [31:0] PC_EPO;
+    //reg [31:0] PC_EPO;
     reg [31:0] DATA_A_EPO;
     reg [31:0] DATA_B_EPO;
     reg [31:0] DATA_SE_EPO;
@@ -94,13 +92,14 @@ module RISC_V(
     
     //WRITEBACK STAGE OUTPUTS (_WO)
     reg [31:0] DATA_WO;
+    reg MUX_CRT_WO;
     
-    //L�gica display
+    //DISPLAY
     reg [31:0] reg0,reg1,reg2,reg3,reg4,reg5,reg6,reg7,reg8,reg9,reg10,reg11,reg12,reg13,reg14,reg15,reg16,reg17,reg18,reg19,reg20,reg21,reg22,reg23,reg24,reg25,reg26,reg27,reg28,reg29,reg30,reg31;   
     reg [31:0] data_reg;
     reg tick_r, tick_l;
     
-//INSTANTIATIONS
+    //INSTANTIATIONS
   
     FETCH FETCH(
         .PC_MEM(PC_MPO), .rst(rst), .clk(clk),.MUX_CRT(BRANCH_MO), /*.PC_OUT(PC_FO),*/ .DATA_OUT(DATA_FO));
@@ -110,7 +109,7 @@ module RISC_V(
             );
      
     DECO DECO(
-        .rst(rst), .clk(clk), .INSTRUCTION(DATA_DPO), .CRT_WB_IN(CRT_WB_WPO[0]), .WRITE_DATA(DATA_WO), .INST(INST_WPO), 
+        .rst(rst), .clk(clk), .INSTRUCTION(DATA_DPO), .CRT_WB_IN(MUX_CRT_WO), .WRITE_DATA(DATA_WO), .INST(INST_WPO), 
         
         .DATA_A_OUT(DATA_A_DO), .DATA_B_OUT(DATA_B_DO), .DATA_SE_OUT(DATA_SE_DO), .INST_OUT(INST_DO),
         .CRT_WB_OUT(CRT_WB_DO), .CRT_MEM_OUT(CRT_MEM_DO), .CRT_EXE_OUT(CRT_EXE_DO),
@@ -145,7 +144,7 @@ module RISC_V(
 
     MEM MEM(
         // Entradas control
-        .clk(clk), .rst(rst), .CRT_MEM_IN(CRT_MEM_MPO), .CRT_WB_IN(CRT_WB_MPO), .CRT_WB_OUT(CRT_WB_MO),   //REVISAR        
+        .clk(clk), .rst(rst), .CRT_MEM_IN(CRT_MEM_MPO), .CRT_WB_IN(CRT_WB_MPO), .CRT_WB_OUT(CRT_WB_MO),          
         // Datos
         .ADDRESS_IN(ALU_RESULT_MPO), .DATA_IN(DATO_B_MPO), .ZERO_IN(ZERO_MPO), .INST_IN(INST_MPO), .DATA_OUT(DATA_MO), 
         
@@ -159,7 +158,7 @@ module RISC_V(
     );
       
     WR WR(
-        .CRT_WB_IN(CRT_WB_WPO[1]), .DATA_M(READ_DATA_WPO), .DATA_E(ALU_RESULT_WPO), .DATA_OUT(DATA_WO)
+        .CRT_WB_IN(CRT_WB_WPO[1]), .MUX_CRT_IN(CRT_WB_WPO[0]), .DATA_M(READ_DATA_WPO), .DATA_E(ALU_RESULT_WPO), .DATA_OUT(DATA_WO), .MUX_CRT_OUT(MUX_CRT_WO) 
     );
     
     disp_reg disp_reg (

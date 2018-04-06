@@ -19,15 +19,23 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 module WR(
+
     input  CRT_WB_IN,
     input [31:0] DATA_M,
     input [31:0] DATA_E,
-    output [31:0] DATA_OUT
+    input MUX_CRT_IN,
+//    input  [4:0]INST_IN,
+//    output reg [4:0] INST_OUT,
+    output [31:0] DATA_OUT,
+    output reg MUX_CRT_OUT
     );
     
     reg MUX_CRT;
     reg [31:0] DATA;
     assign MUX_CRT = CRT_WB_IN;
+    assign MUX_CRT_OUT = MUX_CRT_IN;
+//    assign INST_OUT = INST_IN;
+
     always @ * begin
             case (MUX_CRT)
                 1'b0: DATA = DATA_M;

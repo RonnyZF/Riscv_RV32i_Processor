@@ -36,13 +36,13 @@ module EXE(
     input [2:0] FUNCT3_IN,
 
 // Datos Salida
-    output [4:0] CRT_MEM_OUT, // 
-    output [1:0] CRT_WB_OUT, // 
-    output [31:0] PC_NEXT_OUT, // 
-    output ZERO_OUT, // 
+    output [4:0] CRT_MEM_OUT, 
+    output [1:0] CRT_WB_OUT,  
+    output [31:0] PC_NEXT_OUT,  
+    output ZERO_OUT,  
     output [31:0] ALU_RESULT,
-    output [31:0] DATO_B_OUT, // 
-    output [4:0] INST_OUT // 
+    output [31:0] DATO_B_OUT,  
+    output [4:0] INST_OUT  
     );
     
     // REGISTROS UTILIZADOS
@@ -62,8 +62,8 @@ module EXE(
     reg [1:0] ALU_OP;
 
    // INSTANCIA
-   // INSTANCIA
     SHIFTER INS_SHIFTER ( .In( DATO_SIGN_EXT), .Out(SHIFT_2_DATA));
+    
     ALU_FINAL INS_ALU (.clk(clk), .a(DATO_A),.b(DATO_B_MUX), .Alu_op(ALU_OP), .funct7(FUNCT7_DATA), .funct3(FUNCT3_DATA),
                        .zero(ZERO_REG),.result(ALU_DATO));
                        

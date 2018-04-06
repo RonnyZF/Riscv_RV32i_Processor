@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 16.03.2018 21:38:54
+// Create Date: 04.04.2018 22:15:21
 // Design Name: 
-// Module Name: Ext_Signo
+// Module Name: new
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -18,12 +18,9 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-module Ext_Signo(
-    input [11:0] IN_16,
-    output [31:0] OUT_32
+
+
+module new(
+
     );
-	 
-    assign OUT_32 = {20'b00000000000000000000,IN_16[11:0]};
-
 endmodule
-

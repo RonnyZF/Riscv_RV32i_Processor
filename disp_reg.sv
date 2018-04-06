@@ -74,7 +74,7 @@ module disp_reg(
             endcase
         end
         
-    always @(posedge clk or posedge rst)
+    always @(posedge clk) // or posedge rst)
         begin
             if (rst)
                 register <= 5'd0;

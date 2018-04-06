@@ -29,30 +29,27 @@ module CONTROL_UNIT(
     output  [1:0] AluOp_out,
     output  AluSrc_out
     );
+    
     reg RegWrite;
     reg MemWrite, MemRead, MemtoReg;
     reg Branch;
     reg [1:0] AluOp;
     reg AluSrc;
-//Inicialización
-    always @ * begin
-        
-end
-always @*
-            begin
+
+    always @*
+        begin
 // Instrucciones Tipo R    
         case(Opcode_in)
         7'b0110011: //opcode tipo R
-        begin
-            RegWrite = 1'b1;
-            MemWrite=1'b0;
-            MemRead=1'b0;
-            MemtoReg=1'b1;//
-            Branch=1'b0;
-            AluOp=2'b10;
-            AluSrc=1'b0;
-
-        end
+            begin
+                RegWrite = 1'b1;
+                MemWrite=1'b0;
+                MemRead=1'b0;
+                MemtoReg=1'b1;//
+                Branch=1'b0;
+                AluOp=2'b10;
+                AluSrc=1'b0;
+            end
              
 // Instrucciones Tipo I
         7'b0010011: //opcode tipo I
@@ -66,7 +63,7 @@ always @*
                 AluSrc=1'b1; 
             end
 // Instruccion LW
-        7'b0000011: //opcode tipo I
+        7'b0000011: //opcode 
             begin  
                 RegWrite = 1'b1;
                 MemWrite=1'b0;
