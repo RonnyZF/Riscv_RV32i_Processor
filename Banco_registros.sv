@@ -72,7 +72,7 @@ module Banco_registros(
 			else begin
 				if (RegWrite)
 					case(WriteRegister)
-                    5'd0:  reg0  = WriteData;
+                    5'd0:  reg0  = 32'h00000000;
                     5'd1:  reg1  = WriteData;
                     5'd2:  reg2  = WriteData;
                     5'd3:  reg3  = WriteData;

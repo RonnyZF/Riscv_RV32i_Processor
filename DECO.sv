@@ -107,7 +107,15 @@ module DECO(
                    CRT_MEM [4:3] = 2'b00;
                endcase
           end
-
+//            always @ *
+//                begin
+//                if (FUNCT3_DATA==000)
+//                    CRT_MEM [4:3] = 2'b01;
+//                else if (FUNCT3_DATA==001)
+//                    CRT_MEM [4:3] = 2'b10;            
+//                else if (FUNCT3_DATA==100)
+//                    CRT_MEM [4:3] = 2'b11;
+//                end
     // Instanciaci�n
     CONTROL_UNIT CTRL_UNIT(
         .Opcode_in(OPCODE),

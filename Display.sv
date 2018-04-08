@@ -18,8 +18,6 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
-
 module Display
 	(
 	input wire clk, reset,
@@ -46,37 +44,37 @@ module Display
 	 //contador
 
 //contador1
-	always @ (posedge clk or posedge reset)
+	always @ (posedge clk)
 	
 		if (reset)
 			begin
-				count1<=2'b0;
+				count1<=2'd0;
 				
 			end
 		else
 			begin
-				if (count1==27'b000000000011110000100000000)
-					count1<=27'b000000000000000000000000000;
+				if (count1==27'd96320)
+					count1<=27'd0;
 				else 
-					count1<=count1 + 27'b000000000000000000000000001;
+					count1<=count1 + 27'd1;
 			end
 
 //contador2	
-	always @ (posedge clk or posedge reset)
+	always @ (posedge clk)
 
 		if (reset) 
 			begin
-				count2 <= 3'b000;
+				count2 <= 3'd0;
 			end 
 		else 
 			begin
-				if (count1==27'b000000000011110000100000000)
-					count2 <= count2 + 3'b001;
+				if (count1==27'd96320)
+					count2 <= count2 + 3'd1;
 			end
 	
 // modulo salida de encendido display	
 
-   always @(posedge clk or posedge reset)
+   always @(posedge clk)
         begin
 		if (reset)
                 begin
@@ -91,8 +89,7 @@ module Display
                 reg_disp=4'd0;
                 end
 			
-        else 
-            if(count2 == 3'b000)
+        else if(count2 == 3'b000)
                 begin
                 an0 <= 1'b0;
                 an1 <= 1'b1;
@@ -104,111 +101,104 @@ module Display
                 an7 <= 1'b1;
                 reg_disp=reg_h;
                 end
+         else if (count2 == 3'b001)
+                begin
+                an0 <= 1'b1;
+                an1 <= 1'b0;
+                an2 <= 1'b1;
+                an3 <= 1'b1;
+                an4 <= 1'b1;
+                an5 <= 1'b1;
+                an6 <= 1'b1;
+                an7 <= 1'b1;
+                reg_disp=reg_g;
+                end
+          else if (count2 == 3'b010)
+                begin
+                an0 <= 1'b1;
+                an1 <= 1'b1;
+                an2 <= 1'b0;
+                an3 <= 1'b1;
+                an4 <= 1'b1;
+                an5 <= 1'b1;
+                an6 <= 1'b1;
+                an7 <= 1'b1;
+                reg_disp=reg_f;
+                end
+          else if (count2 == 3'b011)
+                begin
+                an0 <= 1'b1;
+                an1 <= 1'b1;
+                an2 <= 1'b1;
+                an3 <= 1'b0;
+                an4 <= 1'b1;
+                an5 <= 1'b1;
+                an6 <= 1'b1;
+                an7 <= 1'b1;
+                reg_disp=reg_e;
+                end
+           else if (count2 == 3'b100)
+                begin
+                an0 <= 1'b1;
+                an1 <= 1'b1;
+                an2 <= 1'b1;
+                an3 <= 1'b1;
+                an4 <= 1'b0;
+                an5 <= 1'b1;
+                an6 <= 1'b1;
+                an7 <= 1'b1;
+                reg_disp=reg_d;
+                end
+           else if (count2 == 3'b101)
+                begin
+                an0 <= 1'b1;
+                an1 <= 1'b1;
+                an2 <= 1'b1;
+                an3 <= 1'b1;
+                an4 <= 1'b1;
+                an5 <= 1'b0;
+                an6 <= 1'b1;
+                an7 <= 1'b1;
+                reg_disp=reg_c;
+                end
+            else if (count2 == 3'b110)
+                begin
+                an0 <= 1'b1;
+                an1 <= 1'b1;
+                an2 <= 1'b1;
+                an3 <= 1'b1;
+                an4 <= 1'b1;
+                an5 <= 1'b1;
+                an6 <= 1'b0;
+                an7 <= 1'b1;
+                reg_disp=reg_b;
+                end
+            else if (count2 == 3'b111)
+                begin
+                an0 <= 1'b1;
+                an1 <= 1'b1;
+                an2 <= 1'b1;
+                an3 <= 1'b1;
+                an4 <= 1'b1;
+                an5 <= 1'b1;
+                an6 <= 1'b1;
+                an7 <= 1'b0;
+                reg_disp=reg_a;
+                end
             else 
-                if (count2 == 3'b001)
-                    begin
-                    an0 <= 1'b1;
-                    an1 <= 1'b0;
-                    an2 <= 1'b1;
-                    an3 <= 1'b1;
-                    an4 <= 1'b1;
-                    an5 <= 1'b1;
-                    an6 <= 1'b1;
-                    an7 <= 1'b1;
-                    reg_disp=reg_g;
-                    end
-                else 
-                    if (count2 == 3'b010)
-                        begin
-                        an0 <= 1'b1;
-                        an1 <= 1'b1;
-                        an2 <= 1'b0;
-                        an3 <= 1'b1;
-                        an4 <= 1'b1;
-                        an5 <= 1'b1;
-                        an6 <= 1'b1;
-                        an7 <= 1'b1;
-                        reg_disp=reg_f;
-                        end
-                    else 
-                        if (count2 == 3'b011)
-                            begin
-                            an0 <= 1'b1;
-                            an1 <= 1'b1;
-                            an2 <= 1'b1;
-                            an3 <= 1'b0;
-                            an4 <= 1'b1;
-                            an5 <= 1'b1;
-                            an6 <= 1'b1;
-                            an7 <= 1'b1;
-                            reg_disp=reg_e;
-                            end
-                        else 
-                            if (count2 == 3'b100)
-                                begin
-                                an0 <= 1'b1;
-                                an1 <= 1'b1;
-                                an2 <= 1'b1;
-                                an3 <= 1'b1;
-                                an4 <= 1'b0;
-                                an5 <= 1'b1;
-                                an6 <= 1'b1;
-                                an7 <= 1'b1;
-                                reg_disp=reg_d;
-                                end
-                            else
-                                if (count2 == 3'b101)
-                                    begin
-                                    an0 <= 1'b1;
-                                    an1 <= 1'b1;
-                                    an2 <= 1'b1;
-                                    an3 <= 1'b1;
-                                    an4 <= 1'b1;
-                                    an5 <= 1'b0;
-                                    an6 <= 1'b1;
-                                    an7 <= 1'b1;
-                                    reg_disp=reg_c;
-                                    end
-                                else 
-                                    if (count2 == 3'b110)
-                                        begin
-                                        an0 <= 1'b1;
-                                        an1 <= 1'b1;
-                                        an2 <= 1'b1;
-                                        an3 <= 1'b1;
-                                        an4 <= 1'b1;
-                                        an5 <= 1'b1;
-                                        an6 <= 1'b0;
-                                        an7 <= 1'b1;
-                                        reg_disp=reg_b;
-                                        end
-                                    else 
-                                        if (count2 == 3'b111)
-                                            begin
-                                            an0 <= 1'b1;
-                                            an1 <= 1'b1;
-                                            an2 <= 1'b1;
-                                            an3 <= 1'b1;
-                                            an4 <= 1'b1;
-                                            an5 <= 1'b1;
-                                            an6 <= 1'b1;
-                                            an7 <= 1'b0;
-                                            reg_disp=reg_a;
-                                            end
-                                        else
-                                            begin
-                                            an0 <= 1'b1;
-                                            an1 <= 1'b1;
-                                            an2 <= 1'b1;
-                                            an3 <= 1'b1;
-                                            an4 <= 1'b1;
-                                            an5 <= 1'b1;
-                                            an6 <= 1'b1;
-                                            an7 <= 1'b1;
-                                            end
+                begin
+                an0 <= 1'b1;
+                an1 <= 1'b1;
+                an2 <= 1'b1;
+                an3 <= 1'b1;
+                an4 <= 1'b1;
+                an5 <= 1'b1;
+                an6 <= 1'b1;
+                an7 <= 1'b1;
+                end
             end
                                 
-	always @*
+	always @ (posedge clk)
 		begin
 			case (reg_disp)
 				4'b0000: out_disp[6:0] = 7'b1000000;//0
@@ -227,7 +217,7 @@ module Display
 				4'b1101: out_disp[6:0] = 7'b0100001;//D
 				4'b1110: out_disp[6:0] = 7'b0000110;//E
 				4'b1111: out_disp[6:0] = 7'b0001110;//F
-				default: out_disp[6:0] = 7'b1000000;//-
+				default: out_disp[6:0] = 7'b0000001;//-
 			endcase
 		end
 		

@@ -23,9 +23,8 @@
 module disp_reg(
 
     input wire clk,rst,
-    input wire [31:0] reg0, reg1, reg2, reg3, reg4, reg5, reg6, reg7, reg8, reg9, reg10,
-                reg11, reg12, reg13, reg14, reg15, reg16, reg17, reg18, reg19, reg20,
-                reg21, reg22, reg23, reg24, reg25, reg26, reg27, reg28, reg29, reg30, reg31,
+    input wire [31:0] reg0, reg1, reg2, reg3, reg4, reg5, reg6, reg7, reg8, reg9, reg10, reg11, reg12, reg13, reg14, reg15, reg16,
+                            reg17, reg18, reg19, reg20, reg21, reg22, reg23, reg24, reg25, reg26, reg27, reg28, reg29, reg30, reg31,
     input wire tick_r,      //fpga
     input wire tick_l,      //fpga
     output reg [31:0] data_reg,     //m�dulo display
@@ -35,7 +34,7 @@ module disp_reg(
     reg [4:0] register;
     
      //banco de registros
-    always @*
+    always @ (posedge clk)
         begin
             case (register)
                 5'd0:  leds [4:0] = 5'b00000;    //R0
@@ -74,22 +73,22 @@ module disp_reg(
             endcase
         end
         
-    always @(posedge clk) // or posedge rst)
+    always @ (posedge clk)
         begin
             if (rst)
                 register <= 5'd0;
-            else
-                if (tick_r)
+            else if (tick_r)
                     register <= register + 5'd1;
-                else
-                    if (tick_l)
+            else if (tick_l)
                         register <= register - 5'd1;
                         
         end
+        
+//      assign data_reg=reg10;
     
-    always @*
+    always @ (posedge clk)
         begin
-            case (leds)
+            case (register)
                 5'b00000: data_reg=reg0; 
                 5'b00001: data_reg=reg1;
                 5'b00010: data_reg=reg2;    

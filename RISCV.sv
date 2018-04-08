@@ -21,7 +21,7 @@
 module RISC_V(
     input clk,
     input rst,
-    input tick_r_in,tick_l_in,
+    input tick_r_in,tick_l_in,pc,
     output [6:0] out_disp,
     output reg an0, an1, an2, an3,an4, an5, an6, an7,
     output reg [4:0] leds 
@@ -97,12 +97,12 @@ module RISC_V(
     //DISPLAY
     reg [31:0] reg0,reg1,reg2,reg3,reg4,reg5,reg6,reg7,reg8,reg9,reg10,reg11,reg12,reg13,reg14,reg15,reg16,reg17,reg18,reg19,reg20,reg21,reg22,reg23,reg24,reg25,reg26,reg27,reg28,reg29,reg30,reg31;   
     reg [31:0] data_reg;
-    reg tick_r, tick_l;
+    reg tick_r, tick_l,PC_tick;
     
     //INSTANTIATIONS
   
     FETCH FETCH(
-        .PC_MEM(PC_MPO), .rst(rst), .clk(clk),.MUX_CRT(BRANCH_MO), /*.PC_OUT(PC_FO),*/ .DATA_OUT(DATA_FO));
+         .tick(PC_tick), .PC_MEM(PC_MPO), .rst(rst), .clk(clk),.MUX_CRT(BRANCH_MO), /*.PC_OUT(PC_FO),*/ .DATA_OUT(DATA_FO));
         
     IF_ID_PIPELINE IF_ID_PIPELINE(
             .rst(rst), .clk(clk), /*.PC_IN(PC_FO),*/ .DATA_IN(DATA_FO), /*.PC_OUT(PC_DPO),*/ .DATA_OUT(DATA_DPO)
@@ -176,5 +176,8 @@ module RISC_V(
             );           
     DEBOUNCER DEB_LEFT(
             .Clock(clk), .btn_in(tick_l_in), .btn_out(tick_l)
-            );                               
+            );  
+    DEBOUNCER DEB_PC(
+            .Clock(clk), .btn_in(pc), .btn_out(PC_tick)
+            );                                                            
 endmodule
