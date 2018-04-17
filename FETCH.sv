@@ -36,9 +36,7 @@ module FETCH(
     always @ (posedge clk)
     begin
         if (rst)
-            PC_FETCH <= 32'd0;
-//        else if (PC_MUX==32'd292)
-//            PC_MUX <= PC_MUX;    
+            PC_FETCH <= 32'd0;  
         else if (MUX_CRT==1'b1)
             begin
             PC_FETCH = PC_MEM;
