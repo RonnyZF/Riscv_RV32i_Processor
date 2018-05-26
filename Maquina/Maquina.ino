@@ -115,7 +115,7 @@ int pos_trama;
 enum state { primera_fase, segunda_fase, escuchar, verificacion };
 enum state current_state = primera_fase;
 
-//estados de la funcion de estados de espera
+//estados de la funcion transmision
 enum state_f {prim_f, seg_f, ter_f,cuar_f};
 enum state_f fase_actual = prim_f;
 
@@ -449,7 +449,7 @@ void compresion() {
   }
 }
 
-
+//funcion que genera el CHECKSUM pra a comprobacion de la trama
 void gen_ACK(char* TRAMA){
   if (TRAMA != 0){
     pos_trama = len_trama - 1;
@@ -462,6 +462,7 @@ void gen_ACK(char* TRAMA){
   return;
 }
 
+// funcion peticion de trama en la que el sistema detecta tramas sino se encarga de enviar peticiones de trama
 int peticion_trama()
 {
   
@@ -477,7 +478,7 @@ int peticion_trama()
             PT1[2] = NIVEL_ADM;
             PT1[3] = MAC_local;
             rf69.send(PT1, sizeof(PT1)); // por medio de este comando se envia la trama PT conformada en las lineas anteriores
-            escucha(2*B);                //hace un llamado a la funcion esu¿cucha por un tiempo determinado
+            escucha(2*B);                //hace un llamado a la funcion escucha por un tiempo determinado
             if (rtse != 0){               //verifica si hay un rts para cambiar de fase de peticion de trama
               current_state = segunda_fase; //se asigna el estado a segunda fase
               
@@ -507,10 +508,10 @@ int peticion_trama()
             CTS[0] = 243;
             CTS[1] = NIVEL_AMD;
             CTS[2] = NIVEL_ADM;
-            CTS[3] = TRAMA[3]; //Reenvia el valord del tamaño de la trama RTS que recibio anteriormenete
+            CTS[3] = TRAMA[3]; //Reenvia el valor del tamaño de la trama RTS que recibio anteriormenete
             CTS[4] = TRAMA[4];
             MAC_destinatario = TRAMA[4];
-            rf69.send(CTS, sizeof(CTS));
+            rf69.send(CTS, sizeof(CTS)); //se envia la trama CTS
             current_state = escuchar;
             Estado=5; 
             return;
@@ -574,12 +575,12 @@ void Trasmision(){
     
   case seg_f:
   {
-    delay((rand() % 12 + 2)*B) ; // se espera un tiempo aleatorio para no chocar con señales
+    delay((rand() % 12 + 2)*B) ; // se espera un tiempo aleatorio en un rango para no colisionar con otras señales
     escucha(2*B); // se llama la funcion de escuchar
     if (ctse !=0){
-      if(MAC_local==TRAMA[5]){ // se comparan las mac local y de entrada
+      if(MAC_local==TRAMA[5]){ // verificar si el dato me pertenece
         if (contador_s == 3){
-          Estado=0;// Entro hibernación
+          Estado=0;// entra en el estado de hibernacion
           contador_s = 0; // reinicio contador de repeticiones de segunda fase
         }
         else{
@@ -640,6 +641,8 @@ void Trasmision(){
     }
     return;
 }
+
+//alarmas
 void Fuego() {
   Pila_alarmas[0]=4;
   Pila_alarmas[1]=NIVEL_ADM;
