@@ -174,24 +174,6 @@ void setup() {
   Serial.print("RFM69 radio @");  Serial.print((int)RF69_FREQ);  Serial.println(" MHz"); // para el serie*/
 }
 
-/* Estados
-  hibernacion=0
-  escuchapt=1
-  clusterdefinicion=2
-  primera fase de peticion de trama=3
-  segunda fase de peticion de trama=4
-  escucha=5
-  verificacion=6
-  guardar alama en pila=7
-  alarmas en la pila=8
-  hay tramas por transmitir=9
-  comprimir alarmas y enviar siguiente salto de amd=10
-  primer estado de espera=11
-  segundo estado de esepera=12
-  tercer estado de espera=13
-  cuarto estado de espera =14
-  se conprimen las alarmas  se enmvian hacia el siguente estado de ADM=15
-*/
 void loop() {
   switch (Estado)
   {
@@ -291,24 +273,18 @@ void loop() {
 }
 
 /*Nivel de Pertenencia ADM*/
-void nivel()
-{
-  while (millis() < start + 600) {
-    if (thread_level < NIVEL_ADM) {
-      NIVEL_ADM = thread_level;
-    }
-  }
-  NIVEL_ADM++;
-  /*Nivel de Pertenencia AMD*/
-  x = NIVEL_ADM % (MCL * 2);
-  y = (MCL * 2) - x;
-
-  if (x < y)
-    NIVEL_AMD = x;
-  else
-    NIVEL_AMD = y;
-  if (x == 0)
-    cluster = 1;
+int Descubrimiento_nivel_pertenencia(){
+  escucha(2*B);   //Se escucha por un periodo de 2B en espera de una trana PT 
+  int NIVEL_ESCUCHADO = TRAMA[2]; //Si se escucha la trama se toma el nivel del emisor de la trama PT
+  if (pte != 0){ // Si la trama que se escucha es del tipo PT
+            if (NIVEL_ESCUCHADO < NIVEL_ADM) { //Si el nivel escuchado en la trama es menor al nivel actual del nodo
+              NIVEL_ADM = NIVEL_ESCUCHADO+1; //Se cambiará el nivel actual por el nivel escuchado más uno
+            }
+          }
+   else{
+          Estado=1;//Si no se tiene que reconfigurar el nivel de pertenencia se vuelve al estado de Hibernación debido a que no se esta implementando las cabezad de cluster
+          return;
+   }
 }
 
 void hibernacion(int cont, int alarm) {
