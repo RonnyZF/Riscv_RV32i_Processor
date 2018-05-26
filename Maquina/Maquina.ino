@@ -551,16 +551,16 @@ int peticion_trama()
 void Trasmision(){
   case: prim_f:
   {
-    if (ctse != 0 or rtse != 0){ // si CTS o RTS estan activos
-      delay(10); // tiempo de espera para trasmisión
-      fase_actual = prim_f; //Primer estado de la maquina 
+    if (ctse != 0 or rtse != 0){ //se condiciona que CTS o RTS deben estar activos para ingresar 
+      delay(10); //tiempo de trasmisión
+      fase_actual = prim_f; // devuelve al estado base de la funcion, primer fase 
       }
-    else if (pte != 0){
-      MAC_emisor=TRAMA[4];
-      NIVEL_ADM_emisor = TRAMA[3];
-      if (NIVEL_ADM_emisor == NIVEL_ADM-1) // si el ID del PT escuchado es menor al ID del nodo reconfiguración{
+    else if (pte != 0){ // si existe un PT entrante
+      MAC_emisor=TRAMA[4]; // la MAC del emisor proviene de la trama de entrada
+      NIVEL_ADM_emisor = TRAMA[3]; // se almacena el nivel en la estructura del emisor
+      if (NIVEL_ADM_emisor == NIVEL_ADM-1) // si se tiene un nivel de eisor inmediatamente inferior al nivel actual se reconfigura la red
       { 
-        fase_actual = seg_f;
+        fase_actual = seg_f; // ago paso la segunda fase
         }
     } 
     }
@@ -568,16 +568,16 @@ void Trasmision(){
     
   case: seg_f:
   {
-    delay((rand() % 9 + 2)*B) ; // espera un tiempo aleatorio
-    escucha(2*B);
+    delay((rand() % 12 + 2)*B) ; // se espera un tiempo aleatorio para no chocar con señales
+    escucha(2*B); // se llama la funcion de escuchar
     if (ctse !=0){
-      if(MAC_local==TRAMA[5]){ // Se compara la MAC_local con la MAC_del_destinatario para saber si el CTS es para el nodo.
+      if(MAC_local==TRAMA[5]){ // se comparan las mac local y de entrada
         if (contador_s == 3){
-          Estado=0;//Regreso al estado de HIBERNACIÓN
-          contador_s = 0;
+          Estado=0;// Entro hibernación
+          contador_s = 0; // reinicio contador de repeticiones de segunda fase
         }
         else{
-              contador_s = contador_s +1;
+              contador_s = contador_s +1; // aumento en 1 el contador de fase 2
               fase_actual = prim_f;
             }
         }
@@ -590,13 +590,13 @@ void Trasmision(){
   case: ter_f:
   {
     if (ctse != 0) {
-      if (TRAMA[5]==MAC_local){//Se compara la MAC local con la MAC_del_destinatario en la CTS
+      if (TRAMA[5]==MAC_local){// se analizan las MAC Address del local y emisor del CTS
             fase_actual = cuar_f;
-            contador_t = 0;
+            contador_t = 0; // se reinicia el contador de tercer estado
             }
       }
-    else if (ctse == 0) {
-      if (contador_t == 3) {
+    else if (ctse == 0) { // si no existe ctse en el momento 
+      if (contador_t == 12) { // al contador llegar al maximo
         Estado=0;// Pasa a modo Hibernación
         contador_t = 0;
         }
@@ -608,16 +608,15 @@ void Trasmision(){
   }
   case: cuar_f:
   {
-    char data [3] ; // Esta es la TRAMA_enviada de alarma que se envía
-    data[0]=245;
-    data[1]=TRAMA[len-1];
-    data[2]=MAC_emisor;
-    rf69.send(data, sizeof(data)); // asi se envia un dato 
-    // CHECK_SUM_enviado=TRAMA_enviada[6] //Se guarda el check_sum enviado
-    delay(10);//Escucha por una trama ACK
-    if (acke != 0){
+    uint8_t data [3] ; // trama de datos de envio
+    data[0]=245; // partes de trama
+    data[1]=TRAMA[len-1]; // partes de trama
+    data[2]=MAC_emisor; // parte de la trama
+    rf69.send(data, sizeof(data)); // comando envio de datos en el rf69 
+    delay(10); // tiempo de espera 
+    if (acke != 0){ // escucha por el ack entrante
       CHECK_SUM_recibido=TRAMA[2];
-      if (CHECK_SUM_recibido==CHECK_SUM_enviado){
+      if (CHECK_SUM_recibido==CHECK_SUM_enviado){ // si ack recibido en este caso CHECK_SUM existe y es igual al que se envio
         borrado=1;
         pila_alarmas();
         borrado=0;
