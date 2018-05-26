@@ -17,7 +17,7 @@ uint8_t Alarma1=HIGH;  // se define el tipo de dato uint8_t para definir un tama
 uint8_t Alarma2=HIGH;
 uint8_t Alarma3=HIGH;
 uint8_t Alarma4=HIGH;
-char Pila_alarmas[2];
+char Pila_alarmas[2]; //se define una variabe de tipo char para almacenar las alarmas
 
 int btn_1=0;  //se definen los botone para las alarmas y el de borrado
 int btn_2=1;
@@ -44,7 +44,7 @@ int RTS_env = 0;
 int CTS_reci = 0;
 int Trama_ack = 0;
 int cont = 0;
-int Estado = 0;
+int Estado = 0; //variable que defini el estado de la maquina general del sistema
 int level_ADM = 255;
 int start = millis();
 int thread_level;
@@ -65,8 +65,9 @@ int MAC_emisor;
 int NIVEL_ADM_emisor;
 int CHECK_SUM_recibido;
 int CHECK_SUM_enviado;
+
 int mace; //valores de salida de la funcion escucha
-int pte;
+int pte; 
 int ctse;
 int rtse;
 int acke;
@@ -147,8 +148,7 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt((btn_4)),AD,FALLING);
 
 
-  
-  while (!Serial) ; // wait for Arduino Serial Monitor 
+    while (!Serial) ; // wait for Arduino Serial Monitor 
   Serial.begin(115200); // velocidad de baudios
   pinMode(LED, OUTPUT);    //led que indica que hay comunicacion
   pinMode(RFM69_RST, OUTPUT);
@@ -168,13 +168,13 @@ void setup() {
     Serial.println("setFrequency failed");
   }
   rf69.setTxPower(20, true);  // define el rango va de 14-20 el true debe estar siempre activo en el hwc
-  // esto es como una encriptacion (no entiendo para que sirva)
+  // esto es como una encriptacion
   uint8_t key[] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
                     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
                   };
-  rf69.setEncryptionKey(key);
-  pinMode(LED, OUTPUT);//vuelven a definir el led
-  Serial.print("RFM69 radio @");  Serial.print((int)RF69_FREQ);  Serial.println(" MHz"); // para el serie*/
+  rf69.setEncryptionKey(key); //uso de una funcion de la libreria Radio Head
+  pinMode(LED, OUTPUT);//definicion del led de comunicacion
+  Serial.print("RFM69 radio @");  Serial.print((int)RF69_FREQ);  Serial.println(" MHz"); // se imprime el radio de frecuencia
 }
 
 /* Estados
@@ -185,7 +185,7 @@ void setup() {
   segunda fase de peticion de trama=4
   escucha=5
   verificacion=6
-  guardar alama en pila=7
+  guardar la alarma en la pila=7
   alarmas en la pila=8
   hay tramas por transmitir=9
   comprimir alarmas y enviar siguiente salto de amd=10
@@ -195,6 +195,10 @@ void setup() {
   cuarto estado de espera =14
   se conprimen las alarmas  se enmvian hacia el siguente estado de ADM=15
 */
+
+/*maquina de estados principal de acuerdi al diagrama de estados dado en la especificacion del proyecto
+que comtempla la implementacion de todas las funciones*/
+
 void loop() {
   switch (Estado)
   {
@@ -314,17 +318,14 @@ void nivel()
     cluster = 1;
 }
 
+// Funcion de hibernacion
 void hibernacion(int cont, int alarm) {
-
-
-  // put your main code here, to run repeatedly:
   delay(1000);
   int sleepMS = Watchdog.sleep(200);
 
   if (alarm == 0)
   {
-    if (conta >= 20)
-    {
+    if (conta >= 20){
       return;
     }
     if (conta <= 20)
@@ -333,8 +334,7 @@ void hibernacion(int cont, int alarm) {
       hibernacion(cont, alarm);
     }
   }
-  if (alarm != 0)
-  {
+  if (alarm != 0){
     return;
   }
 
