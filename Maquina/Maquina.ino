@@ -338,21 +338,22 @@ void hibernacion(int cont, int alarm) {
 }
 
 void escucha(int tiempoenmilis)  {
-  if (rf69.available()) {
+  start1 = millis();
+  if (rf69.available()) { // verifico que el sistema de rf este habilitado
 
-    while (millis() <= (start1 + tiempoenmilis)) {
-      uint8_t buf[RH_RF69_MAX_MESSAGE_LEN]; // asi capta el mensaje
-      uint8_t len = sizeof(buf); // len es el tamaÃ±o del mensaje
-      if (rf69.recv(buf, &len)) {
+    while (millis() <= (start1 + tiempoenmilis)) { // tomo un tiempo determinado de escucha para reducir la potencia consumida
+      uint8_t buf[RH_RF69_MAX_MESSAGE_LEN]; // codigo para recuperar el mensaje
+      uint8_t len = sizeof(buf); // longitud del codigo recuperado
+      if (rf69.recv(buf, &len)) { // verifico el dato recuperado y su longitud
         if (!len) return;
         buf[len] = 0;
-        Serial.print("Received [");// para el serial
-        Serial.print(len);// tamaÃ±o del mensaje
-        Serial.print("]: ");// para el serial
-        Serial.println((char*)buf);// asi imprimen el mensaje al serial
-        Serial.print("RSSI: ");// para el serial
-        Serial.println(rf69.lastRssi(), DEC);// esta es ka seÃ±al que capta el rx la intensidad
-        if (buf[0] == 243 && buf[4] == mace) {
+        Serial.print("Received [");
+        Serial.print(len);// longitud del mensaje recuperado
+        Serial.print("]: ");
+        Serial.println((char*)buf);// asi imprimen el mensaje al serial ya que al ser un uint8_t solo con el char* podría imprimirse
+        Serial.print("RSSI: ");
+        Serial.println(rf69.lastRssi(), DEC);
+        if (buf[0] == 243 && buf[4] == mace) { // comparador del dato principal del pt y la direccion
           pte = 0;
           ctse = 1;
           rtse = 0;
