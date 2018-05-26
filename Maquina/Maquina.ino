@@ -174,6 +174,24 @@ void setup() {
   Serial.print("RFM69 radio @");  Serial.print((int)RF69_FREQ);  Serial.println(" MHz"); // para el serie*/
 }
 
+/* Estados
+  hibernacion=0
+  escuchapt=1
+  clusterdefinicion=2
+  primera fase de peticion de trama=3
+  segunda fase de peticion de trama=4
+  escucha=5
+  verificacion=6
+  guardar alama en pila=7
+  alarmas en la pila=8
+  hay tramas por transmitir=9
+  comprimir alarmas y enviar siguiente salto de amd=10
+  primer estado de espera=11
+  segundo estado de esepera=12
+  tercer estado de espera=13
+  cuarto estado de espera =14
+  se conprimen las alarmas  se enmvian hacia el siguente estado de ADM=15
+*/
 void loop() {
   switch (Estado)
   {
@@ -273,18 +291,24 @@ void loop() {
 }
 
 /*Nivel de Pertenencia ADM*/
-int Descubrimiento_nivel_pertenencia(){
-  escucha(2*B);   //Se escucha por un periodo de 2B en espera de una trana PT 
-  int NIVEL_ESCUCHADO = TRAMA[2]; //Si se escucha la trama se toma el nivel del emisor de la trama PT
-  if (pte != 0){ // Si la trama que se escucha es del tipo PT
-            if (NIVEL_ESCUCHADO < NIVEL_ADM) { //Si el nivel escuchado en la trama es menor al nivel actual del nodo
-              NIVEL_ADM = NIVEL_ESCUCHADO+1; //Se cambiará el nivel actual por el nivel escuchado más uno
-            }
-          }
-   else{
-          Estado=1;//Si no se tiene que reconfigurar el nivel de pertenencia se vuelve al estado de Hibernación debido a que no se esta implementando las cabezad de cluster
-          return;
-   }
+void nivel()
+{
+  while (millis() < start + 600) {
+    if (thread_level < NIVEL_ADM) {
+      NIVEL_ADM = thread_level;
+    }
+  }
+  NIVEL_ADM++;
+  /*Nivel de Pertenencia AMD*/
+  x = NIVEL_ADM % (MCL * 2);
+  y = (MCL * 2) - x;
+
+  if (x < y)
+    NIVEL_AMD = x;
+  else
+    NIVEL_AMD = y;
+  if (x == 0)
+    cluster = 1;
 }
 
 void hibernacion(int cont, int alarm) {
@@ -443,29 +467,28 @@ int peticion_trama()
       case primera_fase:
         {
           escucha(2 * B);
-          if (ctse == 0 or rtse == 0) // si CTS o RTS estan activos ¿HAY QUE AGREGAR PT?
+          if (ctse == 0 or rtse == 0)   // verifica si no hay un cts o rts para enviar la peticion de trama
           {
-            PT1[0] = 240;
+            PT1[0] = 240;              // se conforma cada uno de los bytes de la trama PT
             PT1[1] = 48;
             PT1[2] = NIVEL_ADM;
             PT1[3] = MAC_local;
-            rf69.send(PT1, sizeof(PT1)); // asi se envia un dato
-            //oPT = 1; ///enviar PT, send rx.
-            escucha(2*B);
-            if (rtse != 0){
-              current_state = segunda_fase;
+            rf69.send(PT1, sizeof(PT1)); // por medio de este comando se envia la trama PT conformada en las lineas anteriores
+            escucha(2*B);                //hace un llamado a la funcion esu¿cucha por un tiempo determinado
+            if (rtse != 0){               //verifica si hay un rts para cambiar de fase de peticion de trama
+              current_state = segunda_fase; //se asigna el estado a segunda fase
               
               return;
             }
             else{
-            Estado=0;
+            Estado=0; //en caso de no escuhar un rts se envia al estado de hibernacion
             return;   
             }
                
         }
         else{
-          if (alarma==0){
-            Estado=0;
+          if (alarma==0){ 
+            Estado=0; // en caso de que no existan alarmas se envia al estado de hibernacion
             return;
           }
           else{
@@ -476,50 +499,50 @@ int peticion_trama()
         }
 
           
-      case segunda_fase:
-        {
+      case segunda_fase: 
+        {                 //se conforma la trama CTS
             CTS[0] = 243;
             CTS[1] = NIVEL_AMD;
             CTS[2] = NIVEL_ADM;
-            CTS[3] = TRAMA[3]; //Reenvia el tamaño de trama que recibió en el RTS
+            CTS[3] = TRAMA[3]; //Reenvia el valord del tamaño de la trama RTS que recibio anteriormenete
             CTS[4] = TRAMA[4];
             MAC_destinatario = TRAMA[4];
             rf69.send(CTS, sizeof(CTS));
             current_state = escuchar;
-            Estado=5;
+            Estado=5; 
             return;
         }
       case escuchar:
         {
-          escucha(2*B); //tiempo de espera 2B
-          if (alarmae!= 0) {
-            current_state = verificacion;
+          escucha(2*B); //se llama a la funcion de escucha por un tiempo determinado
+          if (alarmae!= 0) {  //verifica si han llegado alarmas
+            current_state = verificacion; //permance en estado de verificacion
             Estado=6;
             return;
           }
           else  {
-            Estado=0;
+            Estado=0;  //vuelve al estado de hibernacion
             
             return;
           }
         }
       case verificacion:
-        {
+        {               // se genera la trama ACK para verificar si se recibio bien la trama
           gen_ACK(TRAMA);
           ACK_OUT[0] = 245;
           ACK_OUT[1] = checksum_trama;
-          ACK_OUT[2] = MAC_destinario; //REVISAR si es la MAC local o la del destinatario??
-          escucha(2*B); //tiempo de espera 2B
+          ACK_OUT[2] = MAC_destinario; //revisa si el mensje me pertenece
+          escucha(2*B); //llamada de la funcion
           if (alarmae == 0){
             borrado=0;
             pila_alarmas();
-            current_state = primera_fase;
+            current_state = primera_fase; //vuelve al estado de primera fase a iniciar el proceso
             Estado=3;
             return;
           }
           else { 
             current_state = verificacion;
-            Estado=6;
+            Estado=6;  //llama la funcion para iniciar el proceso de peticion de trama
             return;
           }
         }
