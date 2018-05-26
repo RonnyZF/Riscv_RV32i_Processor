@@ -19,7 +19,7 @@ uint8_t Alarma3=HIGH;
 uint8_t Alarma4=HIGH;
 char Pila_alarmas[2]; //se define una variabe de tipo char para almacenar las alarmas
 
-int btn_1=0;  //se definen los botone para las alarmas y el de borrado
+int btn_1=0;  //se definen los botones para las alarmas y el de borrado
 int btn_2=1;
 int btn_3=2;
 int btn_4=3;
@@ -44,7 +44,7 @@ int RTS_env = 0;
 int CTS_reci = 0;
 int Trama_ack = 0;
 int cont = 0;
-int Estado = 0; //variable que defini el estado de la maquina general del sistema
+int Estado = 0; //variable que definir el estado de la maquina general del sistema
 int level_ADM = 255;
 int start = millis();
 int thread_level;
