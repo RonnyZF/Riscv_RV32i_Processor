@@ -548,103 +548,91 @@ int peticion_trama()
 
 
 
-void prim_estado(){
- if (ctse != 0 or rtse != 0){ // si CTS o RTS estan activos
-            delay(10); // tiempo de espera para trasmisión
-            Estado = 11; //Primer estado de la maquina 
-            return;
+void Trasmision(){
+  case: prim_f:
+  {
+    if (ctse != 0 or rtse != 0){ // si CTS o RTS estan activos
+      delay(10); // tiempo de espera para trasmisión
+      fase_actual = prim_f; //Primer estado de la maquina 
+      }
+    else if (pte != 0){
+      MAC_emisor=TRAMA[4];
+      NIVEL_ADM_emisor = TRAMA[3];
+      if (NIVEL_ADM_emisor == NIVEL_ADM-1) // si el ID del PT escuchado es menor al ID del nodo reconfiguración{
+      { 
+        fase_actual = seg_f;
         }
-       else if (pte != 0){
-           //Acá hay que separar la trama PT para sacar el ID_NODE_IN para compararlo con el ID_NODE
-           MAC_emisor=TRAMA[4];
-           NIVEL_ADM_emisor = TRAMA[3];
-         
-           if (NIVEL_ADM_emisor == NIVEL_ADM-1) // si el ID del PT escuchado es menor al ID del nodo reconfiguración{
-           { 
-             Estado = 12;
-             return;// Cambio de nodo si se escucha uno menor
-           }
-       }
-       return; 
-}
-
-void seg_estado(){
-   delay((rand() % 9 + 2)*B) ; // espera un tiempo aleatorio
-      escucha(2*B);
-      if (ctse !=0){
-
-        if(MAC_local==TRAMA[5]){ // Se compara la MAC_local con la MAC_del_destinatario para saber si el CTS es para el nodo.
-            if (contador_s == 3){
-              Estado=0;//Regreso al estado de HIBERNACIÓN
-              contador_s = 0;
-              return;
-            }
-            else{
+    } 
+    }
+    break;
+    
+  case: seg_f:
+  {
+    delay((rand() % 9 + 2)*B) ; // espera un tiempo aleatorio
+    escucha(2*B);
+    if (ctse !=0){
+      if(MAC_local==TRAMA[5]){ // Se compara la MAC_local con la MAC_del_destinatario para saber si el CTS es para el nodo.
+        if (contador_s == 3){
+          Estado=0;//Regreso al estado de HIBERNACIÓN
+          contador_s = 0;
+        }
+        else{
               contador_s = contador_s +1;
-              Estado = 11;
-              return;
+              fase_actual = prim_f;
             }
         }
       }
-      else {
-        //Se envia la trama RTS
-        contador_s = 0;
-        Estado = 13;
-        return;
+    else {//Se envia la trama RTS
+      contador_s = 0;
+      fase_actual = ter_f;
       }
-}
-
-void terc_estado(){
-  if (ctse != 0) {
-        if (TRAMA[5]==MAC_local){//Se compara la MAC local con la MAC_del_destinatario en la CTS
-            Estado = 14;
+  }
+  case: ter_f:
+  {
+    if (ctse != 0) {
+      if (TRAMA[5]==MAC_local){//Se compara la MAC local con la MAC_del_destinatario en la CTS
+            fase_actual = cuar_f;
             contador_t = 0;
-            return;
-          }
+            }
       }
-      else if (ctse == 0) {
-        if (contador_t == 3) {
-          Estado=0;// Pasa a modo Hibernación
-          contador_t = 0;
-          return;
+    else if (ctse == 0) {
+      if (contador_t == 3) {
+        Estado=0;// Pasa a modo Hibernación
+        contador_t = 0;
         }
         else {
           contador_t = contador_t +1;
-          Estado = 11;
-          return;
+          fase_actual = prim_f;
         }
       } 
-}
-
-void cuar_estado(){
-  
- char data [3] ; // Esta es la TRAMA_enviada de alarma que se envía
-      data[0]=245;
-      data[1]=TRAMA[len-1];
-      data[2]=MAC_emisor;
-        rf69.send(data, sizeof(data)); // asi se envia un dato 
-      // CHECK_SUM_enviado=TRAMA_enviada[6] //Se guarda el check_sum enviado
-      delay(10);//Escucha por una trama ACK
-      if (acke != 0){
-         CHECK_SUM_recibido=TRAMA[2];
-         if (CHECK_SUM_recibido==CHECK_SUM_enviado){
-         borrado=1;
-         pila_alarmas();
-         borrado=0;
-         Estado=0;// pasa a HIBERNACIÓN
-         }
-        else {
-         Estado = 14;
-         return;
+  }
+  case: cuar_f:
+  {
+    char data [3] ; // Esta es la TRAMA_enviada de alarma que se envía
+    data[0]=245;
+    data[1]=TRAMA[len-1];
+    data[2]=MAC_emisor;
+    rf69.send(data, sizeof(data)); // asi se envia un dato 
+    // CHECK_SUM_enviado=TRAMA_enviada[6] //Se guarda el check_sum enviado
+    delay(10);//Escucha por una trama ACK
+    if (acke != 0){
+      CHECK_SUM_recibido=TRAMA[2];
+      if (CHECK_SUM_recibido==CHECK_SUM_enviado){
+        borrado=1;
+        pila_alarmas();
+        borrado=0;
+        Estado=0;// pasa a HIBERNACIÓN
         }
+        else {
+          fase_actual = cuar_f;
+          }
       }
       else {
         Estado=0;
-        return;
-        //Pasa a hibernacion
-       } 
+        } 
+    }
+    return;
 }
-
 void Fuego() {
   Pila_alarmas[0]=4;
   Pila_alarmas[1]=NIVEL_ADM;
