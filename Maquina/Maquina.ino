@@ -5,27 +5,27 @@
 #define RF69_FREQ 915.0
 
 
-#if defined (__AVR_ATmega32U4__) // Feather 32u4 w/Radio
-#define RFM69_CS      8 //configuracion de los puertos
+#if defined (__AVR_ATmega32U4__) //  se designa el uso del modulo Feather 32u4 w/Radio
+#define RFM69_CS      8 // asignacion y configuracion de los puertos
 #define RFM69_INT     7
 #define RFM69_RST     4
 #define LED           13
 #endif
 
 
-uint8_t Alarma1=HIGH;
+uint8_t Alarma1=HIGH;  // se define el tipo de dato uint8_t para definir un tamaño establecido de bits para las alarmas
 uint8_t Alarma2=HIGH;
 uint8_t Alarma3=HIGH;
 uint8_t Alarma4=HIGH;
 char Pila_alarmas[2];
 
-int btn_1=0;
+int btn_1=0;  //se definen los botone para las alarmas y el de borrado
 int btn_2=1;
 int btn_3=2;
 int btn_4=3;
 int borrado;
 
-
+//variables utilizadas
 /*variables para estados*/
 int alarma = 0;
 int mio = 0;
@@ -65,20 +65,20 @@ int MAC_emisor;
 int NIVEL_ADM_emisor;
 int CHECK_SUM_recibido;
 int CHECK_SUM_enviado;
-int mace;
+int mace; //valores de salida de la funcion escucha
 int pte;
 int ctse;
 int rtse;
 int acke;
 int alarmae;
-uint8_t buf[RH_RF69_MAX_MESSAGE_LEN]; // asi capta el mensaje
-uint8_t len = sizeof(buf); // len es el tamaÃ±o del mensaje
+uint8_t buf[RH_RF69_MAX_MESSAGE_LEN]; //de esta forma es captado un mensaje
+uint8_t len = sizeof(buf); // con la variable len se determina el  tamaño del mensaje
 
 
 
 RH_RF69 rf69(RFM69_CS, RFM69_INT);
-int16_t packetnum = 0;  //numero de paquetes que se envian
-int MAC_destinario;
+int16_t packetnum = 0;  //cantiad de paquetes que son enviados
+int MAC_destinario; // variable de tipo entera para la direccion MAC
 /*COMPRESION*/
 int XC = 0;
 int LC = 0;
@@ -91,29 +91,30 @@ int Alarmac;
 int NODOC;
 int TIPOC;
 int MAC_local;
-/*PETICION TRAMA*/
 
-int B = 5;
-char PT1[4];
+//definicion de variables para la funcion
+/*PETICION TRAMA*/
+int B = 5;  //factor de tiempo definido en el instructivo
+char PT1[4];  //conformacion de la trama PT1
 char CTS[5];
 char RTS[5] ;
-char ACK_IN[3] ;
-char ACK_OUT[3] ;
+char ACK_IN[3] ; //conformacion de la trama ACK de entrada
+char ACK_OUT[3] ; //conformacion de la trama ACK saliente
 char Malarma[1];
 char TRAMA[1]; // trama de alarma
 int contador_p = {0};
 int mac;
-int CHECK_SUM;
-
+int CHECK_SUM;  //codigo contenido en el ACK que verifica que se ha recibido correctamente
 int checksum_trama;
 int len_trama;
 int pos_trama;
 
 
+//estados de la funcion peticion de trama
 enum state { primera_fase, segunda_fase, escuchar, verificacion };
 enum state current_state = primera_fase;
 
-
+//estados de la funcion de estados de espera
 enum state_f {prim_f, seg_f, ter_f,cuar_f};
 enum state_f fase_actual = prim_f;
 
@@ -126,6 +127,7 @@ int contador_s = {0}; // contador del segundo estado de espera
 int contador_t = {0}; // contador del tercer estado de espera
 int contador_c = {0}; // contador del cuarto estado de espera
 
+//estados de la funcion de estados de espera
 enum state_st {primer_estado, segundo_estado, tercer_estado, cuarto_estado};
 enum state_st current_state_st = primer_estado;
 
@@ -137,7 +139,8 @@ void setup() {
   pinMode(btn_2,INPUT_PULLUP);
   pinMode(btn_3,INPUT_PULLUP);
   pinMode(btn_4,INPUT_PULLUP);
-
+  
+// asignacion de los pines de alarma
   attachInterrupt(digitalPinToInterrupt((btn_1)),Fuego,FALLING);
   attachInterrupt(digitalPinToInterrupt((btn_2)),Moto_sierra,FALLING);
   attachInterrupt(digitalPinToInterrupt((btn_3)),Disparo,FALLING);
@@ -145,9 +148,9 @@ void setup() {
 
 
   
-  while (!Serial) ; // wait for Arduino Serial Monitor (native USB boards)
+  while (!Serial) ; // wait for Arduino Serial Monitor 
   Serial.begin(115200); // velocidad de baudios
-  pinMode(LED, OUTPUT);     //led para mostrar comunicacion
+  pinMode(LED, OUTPUT);    //led que indica que hay comunicacion
   pinMode(RFM69_RST, OUTPUT);
   digitalWrite(RFM69_RST, LOW);
   Serial.println("Feather RFM69 RX Test!"); //para el serial ploter
@@ -202,11 +205,11 @@ void loop() {
         Estado = 3;
         Serial.print(Estado);
       }
-      if (alarma == 0)/* si hay alarmas va a ;a peticion */
+      if (alarma == 0)/* si hay alarmas va a la funcion peticion de tramas*/
       {
-        hibernacion(cont,alarma);
+        hibernacion(cont,alarma); //llamada de la funcion hibernacion con los parametros cont y alarma
         Estado = 1;
-        Serial.print(Estado);
+        Serial.print(Estado); //imprime el estado, esto se realizo para comprobacion de funcionamiento
       }
       break;
     case 1:
