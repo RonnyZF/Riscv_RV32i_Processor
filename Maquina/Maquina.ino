@@ -114,6 +114,9 @@ enum state { primera_fase, segunda_fase, escuchar, verificacion };
 enum state current_state = primera_fase;
 
 
+enum state_f {prim_f, seg_f, ter_f,cuar_f};
+enum state_f fase_actual = prim_f;
+
 /* Transferencia */
 char data[5];
 int ID_NODE = {10}; // ID del nodo actual
@@ -549,7 +552,7 @@ int peticion_trama()
 
 
 void Trasmision(){
-  case: prim_f:
+  case prim_f:
   {
     if (ctse != 0 or rtse != 0){ //se condiciona que CTS o RTS deben estar activos para ingresar 
       delay(10); //tiempo de trasmisión
@@ -566,7 +569,7 @@ void Trasmision(){
     }
     break;
     
-  case: seg_f:
+  case seg_f:
   {
     delay((rand() % 12 + 2)*B) ; // se espera un tiempo aleatorio para no chocar con señales
     escucha(2*B); // se llama la funcion de escuchar
@@ -587,7 +590,7 @@ void Trasmision(){
       fase_actual = ter_f;
       }
   }
-  case: ter_f:
+  case ter_f:
   {
     if (ctse != 0) {
       if (TRAMA[5]==MAC_local){// se analizan las MAC Address del local y emisor del CTS
@@ -605,8 +608,9 @@ void Trasmision(){
           fase_actual = prim_f;
         }
       } 
+    break;
   }
-  case: cuar_f:
+  case cuar_f:
   {
     uint8_t data [3] ; // trama de datos de envio
     data[0]=245; // partes de trama
@@ -629,6 +633,7 @@ void Trasmision(){
       else {
         Estado=0;
         } 
+    break;
     }
     return;
 }
