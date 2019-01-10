@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
+// Company: Instituto Tecnológico de Costa Rica
+// Engineer: Ronny Zárate Ferreto
 // 
 // Create Date: 17.03.2018 23:19:42
 // Design Name: 
