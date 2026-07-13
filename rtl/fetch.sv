@@ -23,31 +23,21 @@ module FETCH(
     input rst,
     input [31:0] PC_MEM,
     input MUX_CRT,
-    input tick,
-//    output [31:0] PC_OUT,
+    output [31:0] PC_OUT,
     output [31:0] DATA_OUT
     );
     reg [31:0] PC_FETCH;
-    reg [31:0] PC_MUX;
-    reg [31:0] DATA;
     
-    InstructionMem INST_MEM (.clk(clk),.Address(PC_MUX[31:0]),.Word(DATA));
+    InstructionMem INST_MEM (.clk(clk),.Address(PC_FETCH),.Word(DATA_OUT));
+    assign PC_OUT = PC_FETCH;
        
     always @ (posedge clk)
     begin
         if (rst)
             PC_FETCH <= 32'd0;  
         else if (MUX_CRT==1'b1)
-            begin
-            PC_FETCH = PC_MEM;
-            PC_MUX = PC_MEM;
-            end
+            PC_FETCH <= PC_MEM;
         else
-            PC_FETCH <= PC_MUX + 32'd4;
-             PC_MUX <= PC_FETCH;
+            PC_FETCH <= PC_FETCH + 32'd4;
     end
-            
-    assign DATA_OUT = DATA;
-//    assign PC_OUT = PC_MUX;
-    
 endmodule

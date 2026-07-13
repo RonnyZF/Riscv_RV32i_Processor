@@ -24,5 +24,5 @@ module SHIFTER(
     input [31:0] In,
     output [31:0] Out
     );	 
-	 assign Out = In;
+	 assign Out = {In[30:0], 1'b0};
 endmodule

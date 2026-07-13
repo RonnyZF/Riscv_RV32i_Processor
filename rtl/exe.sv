@@ -26,7 +26,7 @@ module EXE(
     input [31:0] DATO_A_IN,
     input [31:0] DATO_B_IN,
     input [31:0] DATO_SIGN_EXT_IN,
-//    input [31:0] PC_NEXT_IN,
+    input [31:0] PC_IN,
     input [4:0] INST_IN,
     input [4:0] CRT_MEM_IN,
     input [1:0] CRT_WB_IN,
@@ -39,6 +39,7 @@ module EXE(
     output [4:0] CRT_MEM_OUT, 
     output [1:0] CRT_WB_OUT,  
     output [31:0] PC_NEXT_OUT,  
+    output reg BRANCH_TAKEN_OUT,
     output ZERO_OUT,  
     output [31:0] ALU_RESULT,
     output [31:0] DATO_B_OUT,  
@@ -49,7 +50,6 @@ module EXE(
     reg [31:0] DATO_A;
     reg [31:0] DATO_B_MUX;
     reg [31:0] DATO_SIGN_EXT;
-//    reg [31:0] PC_NEXT;
     reg [31:0] PC_NEXT_REG_OUT;
     reg [4:0] INST_OUT_REG;
     reg [31:0] SHIFT_2_DATA;
@@ -62,7 +62,7 @@ module EXE(
     reg [1:0] ALU_OP;
 
    // INSTANCIA
-    SHIFTER INS_SHIFTER ( .In( DATO_SIGN_EXT), .Out(SHIFT_2_DATA));
+    SHIFTER INS_SHIFTER ( .In(DATO_SIGN_EXT_IN), .Out(SHIFT_2_DATA));
     
     ALU_FINAL INS_ALU (.clk(clk), .a(DATO_A),.b(DATO_B_MUX), .Alu_op(ALU_OP), .funct7(FUNCT7_DATA), .funct3(FUNCT3_DATA),
                        .zero(ZERO_REG),.result(ALU_DATO));
@@ -84,7 +84,6 @@ module EXE(
         begin 
             DATO_A = DATO_A_IN;
             DATO_SIGN_EXT = DATO_SIGN_EXT_IN;
-//            PC_NEXT = PC_NEXT_IN;
         end
     
     always @ (posedge clk)
@@ -96,11 +95,18 @@ module EXE(
                endcase
              end
                    
-  // PC NEXT
-    always @ (posedge clk)
+    always @*
         begin
-//            PC_NEXT_REG_OUT = PC_NEXT + SHIFT_2_DATA;  REVISAR
-              PC_NEXT_REG_OUT = SHIFT_2_DATA; 
+            PC_NEXT_REG_OUT = PC_IN + SHIFT_2_DATA;
+            case (FUNCT3_IN)
+                3'b000: BRANCH_TAKEN_OUT = CRT_MEM_IN[0] && (DATO_A_IN == DATO_B_IN);
+                3'b001: BRANCH_TAKEN_OUT = CRT_MEM_IN[0] && (DATO_A_IN != DATO_B_IN);
+                3'b100: BRANCH_TAKEN_OUT = CRT_MEM_IN[0] && ($signed(DATO_A_IN) < $signed(DATO_B_IN));
+                3'b101: BRANCH_TAKEN_OUT = CRT_MEM_IN[0] && ($signed(DATO_A_IN) >= $signed(DATO_B_IN));
+                3'b110: BRANCH_TAKEN_OUT = CRT_MEM_IN[0] && (DATO_A_IN < DATO_B_IN);
+                3'b111: BRANCH_TAKEN_OUT = CRT_MEM_IN[0] && (DATO_A_IN >= DATO_B_IN);
+                default: BRANCH_TAKEN_OUT = 1'b0;
+            endcase
         end
    
    

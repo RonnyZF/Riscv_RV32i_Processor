@@ -23,7 +23,6 @@ module Ext_Signo(
     output [31:0] OUT_32
     );
 	 
-    assign OUT_32 = {20'b00000000000000000000,IN_16[11:0]};
+    assign OUT_32 = {{20{IN_16[11]}},IN_16};
 
 endmodule
-

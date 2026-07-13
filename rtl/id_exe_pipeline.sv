@@ -21,10 +21,11 @@
 module ID_EXE_PIPELINE(
     input rst,
     input clk,
+    input flush,
     input [1:0]  CRT_WB_IN,
     input [4:0]  CRT_MEM_IN,
     input [2:0]  CRT_EXE_IN,
-//    input [31:0] PC_IN,
+    input [31:0] PC_IN,
     input [31:0] DATA_A_IN,
     input [31:0] DATA_B_IN,
     input [31:0] DATA_SE_IN,
@@ -35,7 +36,7 @@ module ID_EXE_PIPELINE(
     output reg [1:0]  CRT_WB_OUT,
     output reg [4:0]  CRT_MEM_OUT,
     output reg [2:0]  CRT_EXE_OUT,
-//    output reg [31:0] PC_OUT,
+    output reg [31:0] PC_OUT,
     output reg [31:0] DATA_A_OUT,
     output reg [31:0] DATA_B_OUT,
     output reg [31:0] DATA_SE_OUT,
@@ -45,12 +46,12 @@ module ID_EXE_PIPELINE(
     );
     
     always @ (posedge clk)
-        if(rst)
+        if(rst || flush)
             begin
             CRT_WB_OUT  <= 2'd0;   
             CRT_MEM_OUT <= 3'd0;   
             CRT_EXE_OUT <= 3'd0;  
-//            PC_OUT      <= 32'd0;  
+            PC_OUT      <= 32'd0;
             DATA_A_OUT  <= 32'd0;  
             DATA_B_OUT  <= 32'd0;  
             DATA_SE_OUT <= 32'd0;  
@@ -63,7 +64,7 @@ module ID_EXE_PIPELINE(
             CRT_WB_OUT  <= CRT_WB_IN;    
             CRT_MEM_OUT <= CRT_MEM_IN;   
             CRT_EXE_OUT <= CRT_EXE_IN;  
-//            PC_OUT      <= PC_IN;       
+            PC_OUT      <= PC_IN;
             DATA_A_OUT  <= DATA_A_IN;   
             DATA_B_OUT  <= DATA_B_IN;   
             DATA_SE_OUT <= DATA_SE_IN;  

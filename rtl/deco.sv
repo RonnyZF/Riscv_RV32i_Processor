@@ -60,10 +60,17 @@ module DECO(
     reg [11:0] IMM_S;
     reg [11:0] IMM_B;
     reg [11:0] IMM;
+    wire REG_WRITE_CTRL;
+    wire MEM_WRITE_CTRL;
+    wire MEM_READ_CTRL;
+    wire MEM_TO_REG_CTRL;
+    wire BRANCH_CTRL;
+    wire [1:0] ALU_OP_CTRL;
+    wire ALU_SRC_CTRL;
     
     assign IMM_I = INSTRUCTION[31:20];
     assign IMM_S = {INSTRUCTION[31:25],INSTRUCTION[11:7]};
-    assign IMM_B = {INSTRUCTION[31:25],INSTRUCTION[11:7]};
+    assign IMM_B = {INSTRUCTION[31],INSTRUCTION[7],INSTRUCTION[30:25],INSTRUCTION[11:8]};
     assign DATA_SE = IMM;
     assign OPCODE = INSTRUCTION[6:0];
     assign READ1 =  INSTRUCTION[19:15];
@@ -96,6 +103,7 @@ module DECO(
        
     always @ *
            begin
+               CRT_MEM[2:0] = {MEM_WRITE_CTRL, MEM_READ_CTRL, BRANCH_CTRL};
                case(FUNCT3_DATA)
                3'b000: 
                    CRT_MEM [4:3] = 2'b01; //BEQ
@@ -119,11 +127,11 @@ module DECO(
     // Instanciaci�n
     CONTROL_UNIT CTRL_UNIT(
         .Opcode_in(OPCODE),
-        .RegWrite_out(CRT_WB[0]),
-        .MemWrite_out(CRT_MEM[2]), .MemRead_out(CRT_MEM[1]), .MemtoReg_out(CRT_WB[1]),
-        .Branch_out(CRT_MEM[0]),
-        .AluOp_out(CRT_EXE[2:1]),
-        .AluSrc_out(CRT_EXE[0]) 
+        .RegWrite_out(REG_WRITE_CTRL),
+        .MemWrite_out(MEM_WRITE_CTRL), .MemRead_out(MEM_READ_CTRL), .MemtoReg_out(MEM_TO_REG_CTRL),
+        .Branch_out(BRANCH_CTRL),
+        .AluOp_out(ALU_OP_CTRL),
+        .AluSrc_out(ALU_SRC_CTRL)
         );
     Banco_registros Banco_registros (.RegWrite(CRT_WB_IN), .ReadRegister1(READ1),.ReadRegister2(READ2),
                            .WriteRegister(INST),.rst(rst), .clk(clk), .WriteData(WRITE_DATA),
@@ -134,6 +142,8 @@ module DECO(
                    
     Ext_Signo SIGN_EXT ( .IN_16(DATA_SE), .OUT_32(DATA_SE_EX));
     
+    assign CRT_WB = {MEM_TO_REG_CTRL, REG_WRITE_CTRL};
+    assign CRT_EXE = {ALU_OP_CTRL, ALU_SRC_CTRL};
     assign DATA_A_OUT = DATA_A;
     assign DATA_B_OUT = DATA_B;
     assign DATA_SE_OUT = DATA_SE_EX;

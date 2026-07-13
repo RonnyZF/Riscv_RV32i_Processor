@@ -24,7 +24,7 @@ module InstructionMem(
     output logic [31:0] Word
     );
 
-	 always @ (posedge clk)  
+	 always @*
 	   begin
 	   case (Address[31:0])
 //                4: Word = 32'h00100093; //Addi r1,zero,1

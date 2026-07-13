@@ -21,7 +21,7 @@
 module RISC_V(
     input clk,
     input rst,
-    input tick_r_in,tick_l_in,pc,
+    input tick_r_in,tick_l_in,
     output [6:0] out_disp,
     output reg an0, an1, an2, an3,an4, an5, an6, an7,
     output reg [4:0] leds 
@@ -31,9 +31,11 @@ module RISC_V(
     //VARIABLES
 
     //FETCH STAGE OUTPUTS (_FO)
+    reg [31:0] PC_FO;
     reg [31:0] DATA_FO;   
     
     //FETCH-DECODE PIPELINE OUTPUTS (_DPO)
+    reg [31:0] PC_DPO;
     reg [31:0] DATA_DPO;    
     
     //DECODE STAGE OUTPUTS(_DO)
@@ -51,7 +53,7 @@ module RISC_V(
     reg [1:0]  CRT_WB_EPO;
     reg [4:0]  CRT_MEM_EPO;
     reg [2:0]  CRT_EXE_EPO;
-    //reg [31:0] PC_EPO;
+    reg [31:0] PC_EPO;
     reg [31:0] DATA_A_EPO;
     reg [31:0] DATA_B_EPO;
     reg [31:0] DATA_SE_EPO;
@@ -63,6 +65,7 @@ module RISC_V(
     reg [4:0] CRT_MEM_EO;
     reg [1:0] CRT_WB_EO;
     reg [31:0] PC_NEXT_EO;
+    reg BRANCH_EO;
     reg ZERO_EO;
     reg [31:0] ALU_RESULT_EO;
     reg [31:0] DATO_B_EO; 
@@ -97,15 +100,15 @@ module RISC_V(
     //DISPLAY
     reg [31:0] reg0,reg1,reg2,reg3,reg4,reg5,reg6,reg7,reg8,reg9,reg10,reg11,reg12,reg13,reg14,reg15,reg16,reg17,reg18,reg19,reg20,reg21,reg22,reg23,reg24,reg25,reg26,reg27,reg28,reg29,reg30,reg31;   
     reg [31:0] data_reg;
-    reg tick_r, tick_l,PC_tick;
+    reg tick_r, tick_l;
     
     //INSTANTIATIONS
   
     FETCH FETCH(
-         .tick(PC_tick), .PC_MEM(PC_MPO), .rst(rst), .clk(clk),.MUX_CRT(BRANCH_MO), /*.PC_OUT(PC_FO),*/ .DATA_OUT(DATA_FO));
+         .PC_MEM(PC_NEXT_EO), .rst(rst), .clk(clk),.MUX_CRT(BRANCH_EO), .PC_OUT(PC_FO), .DATA_OUT(DATA_FO));
         
     IF_ID_PIPELINE IF_ID_PIPELINE(
-            .rst(rst), .clk(clk), /*.PC_IN(PC_FO),*/ .DATA_IN(DATA_FO), /*.PC_OUT(PC_DPO),*/ .DATA_OUT(DATA_DPO)
+            .rst(rst), .clk(clk), .flush(BRANCH_EO), .PC_IN(PC_FO), .DATA_IN(DATA_FO), .PC_OUT(PC_DPO), .DATA_OUT(DATA_DPO)
             );
      
     DECO DECO(
@@ -118,22 +121,22 @@ module RISC_V(
         .reg21(reg21), .reg22(reg22), .reg23(reg23), .reg24(reg24), .reg25(reg25), .reg26(reg26), .reg27(reg27), .reg28(reg28), .reg29(reg29), .reg30(reg30), .reg31(reg31));
 
     ID_EXE_PIPELINE ID_EXE_PIPELINE(
-        .rst(rst), .clk(clk), .CRT_WB_IN(CRT_WB_DO), .CRT_MEM_IN(CRT_MEM_DO), .CRT_EXE_IN(CRT_EXE_DO),
+        .rst(rst), .clk(clk), .flush(BRANCH_EO), .CRT_WB_IN(CRT_WB_DO), .CRT_MEM_IN(CRT_MEM_DO), .CRT_EXE_IN(CRT_EXE_DO),
          
-        /*.PC_IN(PC_DPO),*/ .DATA_A_IN(DATA_A_DO), .DATA_B_IN(DATA_B_DO), .DATA_SE_IN(DATA_SE_DO), .INST_IN(INST_DO),
+        .PC_IN(PC_DPO), .DATA_A_IN(DATA_A_DO), .DATA_B_IN(DATA_B_DO), .DATA_SE_IN(DATA_SE_DO), .INST_IN(INST_DO),
         .FUNCT7_IN(FUNCT7_DO), .FUNCT3_IN(FUNCT3_DO),
         
-        .CRT_WB_OUT(CRT_WB_EPO), .CRT_MEM_OUT(CRT_MEM_EPO), .CRT_EXE_OUT(CRT_EXE_EPO), /*.PC_OUT(PC_EPO),*/ 
+        .CRT_WB_OUT(CRT_WB_EPO), .CRT_MEM_OUT(CRT_MEM_EPO), .CRT_EXE_OUT(CRT_EXE_EPO), .PC_OUT(PC_EPO),
         .DATA_A_OUT(DATA_A_EPO), .DATA_B_OUT(DATA_B_EPO), .DATA_SE_OUT(DATA_SE_EPO), .INST_OUT(INST_EPO),
         .FUNCT7_OUT(FUNCT7_EPO),.FUNCT3_OUT(FUNCT3_EPO)    
     );
           
     EXE EXE(
         //Datos de entrada
-        .clk(clk), .DATO_A_IN(DATA_A_EPO), .DATO_B_IN(DATA_B_EPO), .DATO_SIGN_EXT_IN(DATA_SE_EPO), /*.PC_NEXT_IN(PC_EPO),*/ .INST_IN(INST_EPO), .CRT_MEM_IN(CRT_MEM_EPO), .CRT_WB_IN(CRT_WB_EPO),
+        .clk(clk), .DATO_A_IN(DATA_A_EPO), .DATO_B_IN(DATA_B_EPO), .DATO_SIGN_EXT_IN(DATA_SE_EPO), .PC_IN(PC_EPO), .INST_IN(INST_EPO), .CRT_MEM_IN(CRT_MEM_EPO), .CRT_WB_IN(CRT_WB_EPO),
         .FUNCT7_IN(FUNCT7_EPO), .FUNCT3_IN(FUNCT3_EPO), .CRT_EXE_IN(CRT_EXE_EPO),
         // Datos Salida
-        .CRT_MEM_OUT(CRT_MEM_EO), .CRT_WB_OUT(CRT_WB_EO), .PC_NEXT_OUT(PC_NEXT_EO), .ZERO_OUT(ZERO_EO), .ALU_RESULT(ALU_RESULT_EO), .DATO_B_OUT(DATO_B_EO), .INST_OUT(INST_EO)
+        .CRT_MEM_OUT(CRT_MEM_EO), .CRT_WB_OUT(CRT_WB_EO), .PC_NEXT_OUT(PC_NEXT_EO), .BRANCH_TAKEN_OUT(BRANCH_EO), .ZERO_OUT(ZERO_EO), .ALU_RESULT(ALU_RESULT_EO), .DATO_B_OUT(DATO_B_EO), .INST_OUT(INST_EO)
             );
 
     EXE_MEN_PIPELINE EXE_MEN_PIPELINE(
@@ -177,7 +180,4 @@ module RISC_V(
     DEBOUNCER DEB_LEFT(
             .Clock(clk), .btn_in(tick_l_in), .btn_out(tick_l)
             );  
-    DEBOUNCER DEB_PC(
-            .Clock(clk), .btn_in(pc), .btn_out(PC_tick)
-            );                                                            
 endmodule
