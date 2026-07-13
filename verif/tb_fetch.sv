@@ -12,6 +12,7 @@ module tb_fetch;
         .rst(rst),
         .PC_MEM(pc_mem),
         .MUX_CRT(mux_crt),
+        .enable(1'b1),
         .DATA_OUT(data_out)
     );
 

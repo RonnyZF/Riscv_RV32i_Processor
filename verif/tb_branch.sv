@@ -32,6 +32,7 @@ module tb_branch;
         .rst(rst), .clk(clk), .INSTRUCTION(instruction), .WRITE_DATA(32'd0),
         .INST(5'd0), .CRT_WB_IN(1'b0), .DATA_A_OUT(unused_data_a),
         .DATA_B_OUT(unused_data_b), .DATA_SE_OUT(decoded_immediate),
+        .RS1_OUT(), .RS2_OUT(),
         .INST_OUT(unused_inst), .CRT_WB_OUT(unused_wb),
         .CRT_MEM_OUT(unused_mem), .CRT_EXE_OUT(unused_exe),
         .FUNCT7_OUT(unused_funct7), .FUNCT3_OUT(unused_funct3)
@@ -39,9 +40,14 @@ module tb_branch;
 
     EXE execute (
         .clk(clk), .DATO_A_IN(data_a), .DATO_B_IN(data_b),
-        .DATO_SIGN_EXT_IN(immediate), .PC_IN(pc_in), .INST_IN(5'd0),
+        .DATO_SIGN_EXT_IN(immediate), .PC_IN(pc_in), .RS1_IN(5'd0),
+        .RS2_IN(5'd0), .INST_IN(5'd0),
         .CRT_MEM_IN(crt_mem), .CRT_WB_IN(2'd0), .CRT_EXE_IN(3'd0),
-        .FUNCT7_IN(7'd0), .FUNCT3_IN(funct3), .CRT_MEM_OUT(unused_mem_out),
+        .FUNCT7_IN(7'd0), .FUNCT3_IN(funct3), .EX_MEM_RESULT_IN(32'd0),
+        .EX_MEM_RD_IN(5'd0), .EX_MEM_REG_WRITE_IN(1'b0),
+        .EX_MEM_MEM_TO_REG_IN(1'b0), .MEM_WB_DATA_IN(32'd0),
+        .MEM_WB_RD_IN(5'd0), .MEM_WB_REG_WRITE_IN(1'b0),
+        .CRT_MEM_OUT(unused_mem_out),
         .CRT_WB_OUT(unused_wb_out), .PC_NEXT_OUT(branch_target),
         .BRANCH_TAKEN_OUT(branch_taken), .ZERO_OUT(), .ALU_RESULT(),
         .DATO_B_OUT(), .INST_OUT(unused_inst_out)

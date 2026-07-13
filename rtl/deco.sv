@@ -31,6 +31,8 @@ module DECO(
     output [31:0] DATA_A_OUT,
     output [31:0] DATA_B_OUT,
     output [31:0] DATA_SE_OUT,
+    output [4:0] RS1_OUT,
+    output [4:0] RS2_OUT,
     output [4:0] INST_OUT,
     output [1:0] CRT_WB_OUT,
     output [4:0] CRT_MEM_OUT,
@@ -147,6 +149,8 @@ module DECO(
     assign DATA_A_OUT = DATA_A;
     assign DATA_B_OUT = DATA_B;
     assign DATA_SE_OUT = DATA_SE_EX;
+    assign RS1_OUT = READ1;
+    assign RS2_OUT = READ2;
     assign INST_OUT = INST_DATA;
     assign CRT_WB_OUT = CRT_WB;
     assign CRT_MEM_OUT = CRT_MEM;

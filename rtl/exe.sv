@@ -27,6 +27,8 @@ module EXE(
     input [31:0] DATO_B_IN,
     input [31:0] DATO_SIGN_EXT_IN,
     input [31:0] PC_IN,
+    input [4:0] RS1_IN,
+    input [4:0] RS2_IN,
     input [4:0] INST_IN,
     input [4:0] CRT_MEM_IN,
     input [1:0] CRT_WB_IN,
@@ -34,6 +36,13 @@ module EXE(
 // Se�ales de control    
     input [6:0] FUNCT7_IN,
     input [2:0] FUNCT3_IN,
+    input [31:0] EX_MEM_RESULT_IN,
+    input [4:0] EX_MEM_RD_IN,
+    input EX_MEM_REG_WRITE_IN,
+    input EX_MEM_MEM_TO_REG_IN,
+    input [31:0] MEM_WB_DATA_IN,
+    input [4:0] MEM_WB_RD_IN,
+    input MEM_WB_REG_WRITE_IN,
 
 // Datos Salida
     output [4:0] CRT_MEM_OUT, 
@@ -47,72 +56,60 @@ module EXE(
     );
     
     // REGISTROS UTILIZADOS
-    reg [31:0] DATO_A;
     reg [31:0] DATO_B_MUX;
-    reg [31:0] DATO_SIGN_EXT;
     reg [31:0] PC_NEXT_REG_OUT;
-    reg [4:0] INST_OUT_REG;
     reg [31:0] SHIFT_2_DATA;
-    reg ZERO_REG;
-    reg [31:0] ALU_DATO;
-    reg [6:0] FUNCT7_DATA;
-    reg [2:0] FUNCT3_DATA;
-    reg [2:0] CRT_EXE;
-    reg CRT_MUX_ALU;
-    reg [1:0] ALU_OP;
+    reg [31:0] FORWARDED_A;
+    reg [31:0] FORWARDED_B;
 
    // INSTANCIA
     SHIFTER INS_SHIFTER ( .In(DATO_SIGN_EXT_IN), .Out(SHIFT_2_DATA));
     
-    ALU_FINAL INS_ALU (.clk(clk), .a(DATO_A),.b(DATO_B_MUX), .Alu_op(ALU_OP), .funct7(FUNCT7_DATA), .funct3(FUNCT3_DATA),
-                       .zero(ZERO_REG),.result(ALU_DATO));
+    ALU_FINAL INS_ALU (.clk(clk), .a(FORWARDED_A),.b(DATO_B_MUX), .Alu_op(CRT_EXE_IN[2:1]), .funct7(FUNCT7_IN), .funct3(FUNCT3_IN),
+                       .zero(ZERO_OUT),.result(ALU_RESULT));
                        
     // DATOS QUE PASAN SIN CAMBIOS 
     assign CRT_MEM_OUT = CRT_MEM_IN;
     assign CRT_WB_OUT = CRT_WB_IN;
-    assign DATO_B_OUT = DATO_B_IN;
-    
-     // Asignaciones
-     assign INST_OUT_REG = INST_IN;
-     assign FUNCT7_DATA = FUNCT7_IN;
-     assign FUNCT3_DATA = FUNCT3_IN;
-     assign CRT_EXE = CRT_EXE_IN;
-     assign CRT_MUX_ALU = CRT_EXE[0];
-     assign ALU_OP = CRT_EXE[2:1];
-     
-    always @ (posedge clk)
-        begin 
-            DATO_A = DATO_A_IN;
-            DATO_SIGN_EXT = DATO_SIGN_EXT_IN;
-        end
-    
-    always @ (posedge clk)
-            begin
-               case (CRT_MUX_ALU)
-                 1'b0: DATO_B_MUX <= DATO_B_IN;
-                 1'b1: DATO_B_MUX <= DATO_SIGN_EXT_IN;
-//                 default: DATO_B_MUX <= DATO_B_IN;
-               endcase
-             end
+    assign DATO_B_OUT = FORWARDED_B;
+    assign INST_OUT = INST_IN;
                    
     always @*
         begin
+            FORWARDED_A = DATO_A_IN;
+            FORWARDED_B = DATO_B_IN;
+
+            if (EX_MEM_REG_WRITE_IN && !EX_MEM_MEM_TO_REG_IN &&
+                (EX_MEM_RD_IN != 5'd0) && (EX_MEM_RD_IN == RS1_IN))
+                FORWARDED_A = EX_MEM_RESULT_IN;
+            else if (MEM_WB_REG_WRITE_IN && (MEM_WB_RD_IN != 5'd0) &&
+                     (MEM_WB_RD_IN == RS1_IN))
+                FORWARDED_A = MEM_WB_DATA_IN;
+
+            if (EX_MEM_REG_WRITE_IN && !EX_MEM_MEM_TO_REG_IN &&
+                (EX_MEM_RD_IN != 5'd0) && (EX_MEM_RD_IN == RS2_IN))
+                FORWARDED_B = EX_MEM_RESULT_IN;
+            else if (MEM_WB_REG_WRITE_IN && (MEM_WB_RD_IN != 5'd0) &&
+                     (MEM_WB_RD_IN == RS2_IN))
+                FORWARDED_B = MEM_WB_DATA_IN;
+
+            if (CRT_EXE_IN[0])
+                DATO_B_MUX = DATO_SIGN_EXT_IN;
+            else
+                DATO_B_MUX = FORWARDED_B;
+
             PC_NEXT_REG_OUT = PC_IN + SHIFT_2_DATA;
             case (FUNCT3_IN)
-                3'b000: BRANCH_TAKEN_OUT = CRT_MEM_IN[0] && (DATO_A_IN == DATO_B_IN);
-                3'b001: BRANCH_TAKEN_OUT = CRT_MEM_IN[0] && (DATO_A_IN != DATO_B_IN);
-                3'b100: BRANCH_TAKEN_OUT = CRT_MEM_IN[0] && ($signed(DATO_A_IN) < $signed(DATO_B_IN));
-                3'b101: BRANCH_TAKEN_OUT = CRT_MEM_IN[0] && ($signed(DATO_A_IN) >= $signed(DATO_B_IN));
-                3'b110: BRANCH_TAKEN_OUT = CRT_MEM_IN[0] && (DATO_A_IN < DATO_B_IN);
-                3'b111: BRANCH_TAKEN_OUT = CRT_MEM_IN[0] && (DATO_A_IN >= DATO_B_IN);
+                3'b000: BRANCH_TAKEN_OUT = CRT_MEM_IN[0] && (FORWARDED_A == FORWARDED_B);
+                3'b001: BRANCH_TAKEN_OUT = CRT_MEM_IN[0] && (FORWARDED_A != FORWARDED_B);
+                3'b100: BRANCH_TAKEN_OUT = CRT_MEM_IN[0] && ($signed(FORWARDED_A) < $signed(FORWARDED_B));
+                3'b101: BRANCH_TAKEN_OUT = CRT_MEM_IN[0] && ($signed(FORWARDED_A) >= $signed(FORWARDED_B));
+                3'b110: BRANCH_TAKEN_OUT = CRT_MEM_IN[0] && (FORWARDED_A < FORWARDED_B);
+                3'b111: BRANCH_TAKEN_OUT = CRT_MEM_IN[0] && (FORWARDED_A >= FORWARDED_B);
                 default: BRANCH_TAKEN_OUT = 1'b0;
             endcase
         end
    
-   
-   assign ZERO_OUT = ZERO_REG;         
-   assign INST_OUT = INST_OUT_REG;
    assign PC_NEXT_OUT = PC_NEXT_REG_OUT;         
-   assign ALU_RESULT = ALU_DATO;
     
 endmodule

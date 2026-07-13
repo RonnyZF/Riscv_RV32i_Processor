@@ -20,7 +20,7 @@ module tb_pipeline_flush;
     logic [2:0] funct3_out;
 
     IF_ID_PIPELINE if_id (
-        .rst(rst), .clk(clk), .flush(flush), .PC_IN(pc_in),
+        .rst(rst), .clk(clk), .flush(flush), .enable(1'b1), .PC_IN(pc_in),
         .DATA_IN(instruction_in), .PC_OUT(pc_if_id),
         .DATA_OUT(instruction_if_id)
     );
@@ -29,7 +29,7 @@ module tb_pipeline_flush;
         .rst(rst), .clk(clk), .flush(flush), .CRT_WB_IN(2'b11),
         .CRT_MEM_IN(5'b11111), .CRT_EXE_IN(3'b111), .PC_IN(pc_if_id),
         .DATA_A_IN(32'h11111111), .DATA_B_IN(32'h22222222),
-        .DATA_SE_IN(32'h33333333), .INST_IN(5'd31),
+        .DATA_SE_IN(32'h33333333), .RS1_IN(5'd1), .RS2_IN(5'd2), .INST_IN(5'd31),
         .FUNCT7_IN(7'h7f), .FUNCT3_IN(3'b111), .CRT_WB_OUT(wb_out),
         .CRT_MEM_OUT(mem_out), .CRT_EXE_OUT(exe_out), .PC_OUT(pc_id_ex),
         .DATA_A_OUT(data_a_out), .DATA_B_OUT(data_b_out),

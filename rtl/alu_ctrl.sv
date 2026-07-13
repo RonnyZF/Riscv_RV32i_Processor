@@ -27,8 +27,9 @@ module Alu_ctrl(
     output reg [3:0] ctrl
     );
 
-    always @ (posedge clk)
+    always @*
         begin
+            ctrl = 4'b0010;
             case (Alu_op)
             2'b00:
                 case(funct3)
@@ -56,6 +57,7 @@ module Alu_ctrl(
                             endcase
                     7'b0100000: ctrl = 4'b0110;
                 endcase
+            default: ctrl = 4'b0010;
             endcase
         end            
 endmodule

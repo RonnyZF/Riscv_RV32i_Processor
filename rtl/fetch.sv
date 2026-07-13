@@ -23,6 +23,7 @@ module FETCH(
     input rst,
     input [31:0] PC_MEM,
     input MUX_CRT,
+    input enable,
     output [31:0] PC_OUT,
     output [31:0] DATA_OUT
     );
@@ -37,7 +38,7 @@ module FETCH(
             PC_FETCH <= 32'd0;  
         else if (MUX_CRT==1'b1)
             PC_FETCH <= PC_MEM;
-        else
+        else if (enable)
             PC_FETCH <= PC_FETCH + 32'd4;
     end
 endmodule

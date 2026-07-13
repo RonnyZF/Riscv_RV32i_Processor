@@ -23,6 +23,7 @@ module IF_ID_PIPELINE(
     input rst,
     input clk,
     input flush,
+    input enable,
     input [31:0] PC_IN,
     input [31:0] DATA_IN,
     output reg [31:0] PC_OUT,
@@ -35,7 +36,7 @@ module IF_ID_PIPELINE(
             PC_OUT <= 32'd0;
             DATA_OUT <= 32'd0;        
             end
-        else
+        else if (enable)
             begin
                 PC_OUT <= PC_IN;
                 DATA_OUT <= DATA_IN;

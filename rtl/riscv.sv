@@ -42,6 +42,8 @@ module RISC_V(
     reg [31:0] DATA_A_DO;
     reg [31:0] DATA_B_DO;
     reg [31:0] DATA_SE_DO;
+    reg [4:0]  RS1_DO;
+    reg [4:0]  RS2_DO;
     reg [4:0]  INST_DO;
     reg [1:0]  CRT_WB_DO;
     reg [4:0]  CRT_MEM_DO;
@@ -57,6 +59,8 @@ module RISC_V(
     reg [31:0] DATA_A_EPO;
     reg [31:0] DATA_B_EPO;
     reg [31:0] DATA_SE_EPO;
+    reg [4:0]  RS1_EPO;
+    reg [4:0]  RS2_EPO;
     reg [4:0]  INST_EPO;
     reg [6:0] FUNCT7_EPO;
     reg [2:0] FUNCT3_EPO;
@@ -101,40 +105,48 @@ module RISC_V(
     reg [31:0] reg0,reg1,reg2,reg3,reg4,reg5,reg6,reg7,reg8,reg9,reg10,reg11,reg12,reg13,reg14,reg15,reg16,reg17,reg18,reg19,reg20,reg21,reg22,reg23,reg24,reg25,reg26,reg27,reg28,reg29,reg30,reg31;   
     reg [31:0] data_reg;
     reg tick_r, tick_l;
+    reg STALL;
     
     //INSTANTIATIONS
   
     FETCH FETCH(
-         .PC_MEM(PC_NEXT_EO), .rst(rst), .clk(clk),.MUX_CRT(BRANCH_EO), .PC_OUT(PC_FO), .DATA_OUT(DATA_FO));
+         .PC_MEM(PC_NEXT_EO), .rst(rst), .clk(clk), .MUX_CRT(BRANCH_EO), .enable(!STALL), .PC_OUT(PC_FO), .DATA_OUT(DATA_FO));
         
     IF_ID_PIPELINE IF_ID_PIPELINE(
-            .rst(rst), .clk(clk), .flush(BRANCH_EO), .PC_IN(PC_FO), .DATA_IN(DATA_FO), .PC_OUT(PC_DPO), .DATA_OUT(DATA_DPO)
+            .rst(rst), .clk(clk), .flush(BRANCH_EO), .enable(!STALL), .PC_IN(PC_FO), .DATA_IN(DATA_FO), .PC_OUT(PC_DPO), .DATA_OUT(DATA_DPO)
             );
+
+    HAZARD_UNIT HAZARD_UNIT(
+        .ID_INSTRUCTION(DATA_DPO), .ID_EX_MEM_READ(CRT_MEM_EPO[1]),
+        .ID_EX_RD(INST_EPO), .STALL(STALL)
+    );
      
     DECO DECO(
         .rst(rst), .clk(clk), .INSTRUCTION(DATA_DPO), .CRT_WB_IN(MUX_CRT_WO), .WRITE_DATA(DATA_WO), .INST(INST_WPO), 
         
-        .DATA_A_OUT(DATA_A_DO), .DATA_B_OUT(DATA_B_DO), .DATA_SE_OUT(DATA_SE_DO), .INST_OUT(INST_DO),
+        .DATA_A_OUT(DATA_A_DO), .DATA_B_OUT(DATA_B_DO), .DATA_SE_OUT(DATA_SE_DO), .RS1_OUT(RS1_DO), .RS2_OUT(RS2_DO), .INST_OUT(INST_DO),
         .CRT_WB_OUT(CRT_WB_DO), .CRT_MEM_OUT(CRT_MEM_DO), .CRT_EXE_OUT(CRT_EXE_DO),
         .FUNCT7_OUT(FUNCT7_DO), .FUNCT3_OUT(FUNCT3_DO), .reg0(reg0), .reg1(reg1), .reg2(reg2), .reg3(reg3), .reg4(reg4), .reg5(reg5), .reg6(reg6), .reg7(reg7), .reg8(reg8), .reg9(reg9), .reg10(reg10),
         .reg11(reg11), .reg12(reg12), .reg13(reg13), .reg14(reg14), .reg15(reg15), .reg16(reg16), .reg17(reg17), .reg18(reg18), .reg19(reg19), .reg20(reg20),
         .reg21(reg21), .reg22(reg22), .reg23(reg23), .reg24(reg24), .reg25(reg25), .reg26(reg26), .reg27(reg27), .reg28(reg28), .reg29(reg29), .reg30(reg30), .reg31(reg31));
 
     ID_EXE_PIPELINE ID_EXE_PIPELINE(
-        .rst(rst), .clk(clk), .flush(BRANCH_EO), .CRT_WB_IN(CRT_WB_DO), .CRT_MEM_IN(CRT_MEM_DO), .CRT_EXE_IN(CRT_EXE_DO),
+        .rst(rst), .clk(clk), .flush(BRANCH_EO || STALL), .CRT_WB_IN(CRT_WB_DO), .CRT_MEM_IN(CRT_MEM_DO), .CRT_EXE_IN(CRT_EXE_DO),
          
-        .PC_IN(PC_DPO), .DATA_A_IN(DATA_A_DO), .DATA_B_IN(DATA_B_DO), .DATA_SE_IN(DATA_SE_DO), .INST_IN(INST_DO),
+        .PC_IN(PC_DPO), .DATA_A_IN(DATA_A_DO), .DATA_B_IN(DATA_B_DO), .DATA_SE_IN(DATA_SE_DO), .RS1_IN(RS1_DO), .RS2_IN(RS2_DO), .INST_IN(INST_DO),
         .FUNCT7_IN(FUNCT7_DO), .FUNCT3_IN(FUNCT3_DO),
         
         .CRT_WB_OUT(CRT_WB_EPO), .CRT_MEM_OUT(CRT_MEM_EPO), .CRT_EXE_OUT(CRT_EXE_EPO), .PC_OUT(PC_EPO),
-        .DATA_A_OUT(DATA_A_EPO), .DATA_B_OUT(DATA_B_EPO), .DATA_SE_OUT(DATA_SE_EPO), .INST_OUT(INST_EPO),
+        .DATA_A_OUT(DATA_A_EPO), .DATA_B_OUT(DATA_B_EPO), .DATA_SE_OUT(DATA_SE_EPO), .RS1_OUT(RS1_EPO), .RS2_OUT(RS2_EPO), .INST_OUT(INST_EPO),
         .FUNCT7_OUT(FUNCT7_EPO),.FUNCT3_OUT(FUNCT3_EPO)    
     );
           
     EXE EXE(
         //Datos de entrada
-        .clk(clk), .DATO_A_IN(DATA_A_EPO), .DATO_B_IN(DATA_B_EPO), .DATO_SIGN_EXT_IN(DATA_SE_EPO), .PC_IN(PC_EPO), .INST_IN(INST_EPO), .CRT_MEM_IN(CRT_MEM_EPO), .CRT_WB_IN(CRT_WB_EPO),
+        .clk(clk), .DATO_A_IN(DATA_A_EPO), .DATO_B_IN(DATA_B_EPO), .DATO_SIGN_EXT_IN(DATA_SE_EPO), .PC_IN(PC_EPO), .RS1_IN(RS1_EPO), .RS2_IN(RS2_EPO), .INST_IN(INST_EPO), .CRT_MEM_IN(CRT_MEM_EPO), .CRT_WB_IN(CRT_WB_EPO),
         .FUNCT7_IN(FUNCT7_EPO), .FUNCT3_IN(FUNCT3_EPO), .CRT_EXE_IN(CRT_EXE_EPO),
+        .EX_MEM_RESULT_IN(ALU_RESULT_MPO), .EX_MEM_RD_IN(INST_MPO), .EX_MEM_REG_WRITE_IN(CRT_WB_MPO[1]), .EX_MEM_MEM_TO_REG_IN(!CRT_WB_MPO[0]),
+        .MEM_WB_DATA_IN(DATA_WO), .MEM_WB_RD_IN(INST_WPO), .MEM_WB_REG_WRITE_IN(CRT_WB_WPO[1]),
         // Datos Salida
         .CRT_MEM_OUT(CRT_MEM_EO), .CRT_WB_OUT(CRT_WB_EO), .PC_NEXT_OUT(PC_NEXT_EO), .BRANCH_TAKEN_OUT(BRANCH_EO), .ZERO_OUT(ZERO_EO), .ALU_RESULT(ALU_RESULT_EO), .DATO_B_OUT(DATO_B_EO), .INST_OUT(INST_EO)
             );

@@ -29,6 +29,8 @@ module ID_EXE_PIPELINE(
     input [31:0] DATA_A_IN,
     input [31:0] DATA_B_IN,
     input [31:0] DATA_SE_IN,
+    input [4:0]  RS1_IN,
+    input [4:0]  RS2_IN,
     input [4:0]  INST_IN,
     input [6:0]  FUNCT7_IN,
     input [2:0]  FUNCT3_IN,
@@ -40,6 +42,8 @@ module ID_EXE_PIPELINE(
     output reg [31:0] DATA_A_OUT,
     output reg [31:0] DATA_B_OUT,
     output reg [31:0] DATA_SE_OUT,
+    output reg [4:0]  RS1_OUT,
+    output reg [4:0]  RS2_OUT,
     output reg [4:0]  INST_OUT, 
     output reg [6:0] FUNCT7_OUT,
     output reg [2:0] FUNCT3_OUT   
@@ -55,6 +59,8 @@ module ID_EXE_PIPELINE(
             DATA_A_OUT  <= 32'd0;  
             DATA_B_OUT  <= 32'd0;  
             DATA_SE_OUT <= 32'd0;  
+            RS1_OUT     <= 5'd0;
+            RS2_OUT     <= 5'd0;
             INST_OUT    <= 5'd0; 
             FUNCT7_OUT  <= 7'd0; 
             FUNCT3_OUT  <= 3'd0;
@@ -68,6 +74,8 @@ module ID_EXE_PIPELINE(
             DATA_A_OUT  <= DATA_A_IN;   
             DATA_B_OUT  <= DATA_B_IN;   
             DATA_SE_OUT <= DATA_SE_IN;  
+            RS1_OUT     <= RS1_IN;
+            RS2_OUT     <= RS2_IN;
             INST_OUT    <= INST_IN;    
             FUNCT7_OUT  <= FUNCT7_IN;  
             FUNCT3_OUT  <= FUNCT3_IN;      
