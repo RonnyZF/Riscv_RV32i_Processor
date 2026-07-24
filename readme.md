@@ -99,6 +99,8 @@ una compilacion: el desplazador usado por `EXE` es `rtl/shifter.v`.
 ## Requisitos
 
 - [Icarus Verilog](https://steveicarus.github.io/iverilog/) 12 o posterior
+- Verilator con soporte de SystemVerilog para ejecutar los scripts de
+  `scripts/`
   para ejecutar la verificacion RTL desde linea de comandos.
 - Opcionalmente, Xilinx Vivado para sintesis, implementacion y programacion
   de la Nexys4.
@@ -107,6 +109,26 @@ Los comandos siguientes se ejecutan desde la raiz del repositorio y crean los
 artefactos temporales dentro de `build/`.
 
 ## Simulacion
+
+### Verilator
+
+En PowerShell, ejecute toda la suite con Verilator:
+
+```powershell
+.\scripts\run_verilator.ps1
+```
+
+Para ejecutar un banco individual, sustituya `tb_fetch` por cualquiera de
+`tb_branch`, `tb_pipeline_flush` o `tb_hazards`:
+
+```powershell
+.\scripts\run_verilator.ps1 -Test tb_fetch
+```
+
+Los binarios y archivos intermedios se generan en `build/verilator/`. El
+script fuerza `--no-fourstate`: el PR experimental #7193 de Verilator todavia
+no admite el uso de `case` ni asignaciones parciales presentes en este RTL, por
+lo que el procesador no se puede ejecutar actualmente con `--fourstate`.
 
 ### Ejecutar todas las pruebas disponibles
 
