@@ -112,7 +112,7 @@ artefactos temporales dentro de `build/`.
 
 ### Verilator
 
-En PowerShell, ejecute toda la suite con Verilator:
+En PowerShell, asegúrese de tener configurados `MSYS2_BASH` y `VERILATOR_ROOT` (o `VERILATOR`) y ejecute toda la suite con Verilator:
 
 ```powershell
 .\scripts\run_verilator.ps1
