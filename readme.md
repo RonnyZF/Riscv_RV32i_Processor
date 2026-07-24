@@ -99,9 +99,7 @@ una compilacion: el desplazador usado por `EXE` es `rtl/shifter.v`.
 ## Requisitos
 
 - [Icarus Verilog](https://steveicarus.github.io/iverilog/) 12 o posterior
-- Verilator con soporte de SystemVerilog para ejecutar los scripts de
-  `scripts/`
-  para ejecutar la verificacion RTL desde linea de comandos.
+- Verilator con soporte de SystemVerilog para ejecutar la verificacion RTL desde linea de comandos (scripts en `scripts/`).
 - Opcionalmente, Xilinx Vivado para sintesis, implementacion y programacion
   de la Nexys4.
 
