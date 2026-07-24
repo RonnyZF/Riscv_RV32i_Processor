@@ -1,21 +1,30 @@
 [CmdletBinding()]
 param(
     [ValidateSet("all", "tb_fetch", "tb_branch", "tb_pipeline_flush", "tb_hazards")]
-    [string]$Test = "all"
+    [string]$Test = "all",
+
+    [string]$BashPath = $(if ($env:MSYS2_BASH) { $env:MSYS2_BASH } else { "C:\msys64\usr\bin\bash.exe" }),
+    [string]$VerilatorRoot = $env:VERILATOR_ROOT,
+    [string]$VerilatorPath = $env:VERILATOR
 )
 
 $ErrorActionPreference = "Stop"
 
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
-$bash = "C:\msys64\usr\bin\bash.exe"
-$verilatorRoot = "C:\Users\Ronny\Tools\verilator-fourstate-pr7193"
-$verilator = Join-Path $verilatorRoot "bin\verilator"
+$bash = $BashPath
+
+if (-not $VerilatorRoot -and -not $VerilatorPath) {
+    throw "Verilator was not configured. Set VERILATOR_ROOT (install root) or VERILATOR (full path to the verilator executable), or pass -VerilatorRoot / -VerilatorPath."
+}
+
+$verilatorRoot = if ($VerilatorRoot) { $VerilatorRoot } else { Split-Path (Split-Path $VerilatorPath -Parent) -Parent }
+$verilator = if ($VerilatorPath) { $VerilatorPath } else { Join-Path $verilatorRoot "bin\verilator" }
 
 if (-not (Test-Path $bash)) {
-    throw "MSYS2 was not found at $bash."
+    throw "MSYS2 bash was not found at $bash. Pass -BashPath or set MSYS2_BASH."
 }
 if (-not (Test-Path $verilator)) {
-    throw "The Verilator build was not found at $verilator."
+    throw "The Verilator executable was not found at $verilator."
 }
 
 function ConvertTo-MsysPath {
